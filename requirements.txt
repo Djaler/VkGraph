@@ -1,0 +1,3 @@
+flask
+vk-api
+python-dotenv

@@ -1,0 +1,50 @@
+<html>
+<head>
+    <title>VkGraph</title>
+    <meta charset="utf-8">
+
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="../static/css/bootstrap-material-design.min.css" rel="stylesheet">
+    <link href="../static/css/ripples.min.css" rel="stylesheet">
+
+    <link href="../static/css/main.css" rel="stylesheet">
+</head>
+<body>
+<div class="container container-table">
+    <div class="row vertical-center-row">
+        <div class="col-md-4 col-md-offset-4">
+            <div class="card flipInX animated">
+                <div class="form-group label-floating">
+                    <label class="control-label" for="userId">Введите id пользователя Вконтакте</label>
+                    <input class="form-control" id="userId" type="text">
+                    <a class="btn btn-default center-block" id="scan">Сканировать</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../static/js/jquery-1.10.2.min.js"></script>
+<script src="../static/js/bootstrap.min.js"></script>
+<script src="../static/js/ripples.min.js"></script>
+<script src="../static/js/material.min.js"></script>
+<script>
+    $(function () {
+        $.material.init();
+
+        $("#scan").click(function () {
+            $.ajax({
+                url: "api",
+                data: {user_id: $("#userId").val()},
+                success: function (response) {
+                    alert(response)
+                },
+                error: function () {
+                    alert("Нет такого пользователя")
+                }
+            })
+        })
+    })
+</script>
+</body>
+</html>
