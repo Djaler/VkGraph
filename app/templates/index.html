@@ -8,11 +8,13 @@
     <link href="../static/css/bootstrap-material-design.min.css" rel="stylesheet">
     <link href="../static/css/ripples.min.css" rel="stylesheet">
 
+    <link href="../static/css/vis.min.css" rel="stylesheet">
+
     <link href="../static/css/main.css" rel="stylesheet">
 </head>
 <body>
 <div class="container container-table">
-    <div class="row vertical-center-row">
+    <div class="row vertical-center-row" id="input-row">
         <div class="col-md-4 col-md-offset-4">
             <div class="card flipInX animated">
                 <div class="form-group label-floating">
@@ -23,21 +25,54 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-md-12">
+            <div id="graph-container" class="graph-container"></div>
+        </div>
+    </div>
 </div>
 <script src="../static/js/jquery-1.10.2.min.js"></script>
 <script src="../static/js/bootstrap.min.js"></script>
-<script src="../static/js/ripples.min.js"></script>
-<script src="../static/js/material.min.js"></script>
+<script src="../static/js/bootstrap-material-design/ripples.min.js"></script>
+<script src="../static/js/bootstrap-material-design/material.min.js"></script>
+<script src="../static/js/vis.min.js"></script>
 <script>
     $(function () {
         $.material.init();
 
         $("#scan").click(function () {
             $.ajax({
-                url: "api",
+                url: "mutual_friends",
                 data: {user_id: $("#userId").val()},
                 success: function (response) {
-                    alert(response)
+                    $("#input-row").hide();
+
+                    var nodes = new vis.DataSet(response.nodes);
+
+                    var edges = new vis.DataSet(/*response.edges*/);
+
+                    var container = $('#graph-container')[0];
+
+                    var data = {
+                        nodes: nodes,
+                        edges: edges
+                    };
+                    var options = {
+                        nodes: {
+                            shape: 'circularImage',
+                            mass: 2
+                        }, physics: {
+                            solver: "barnesHut",
+                            maxVelocity: 10
+                        }
+                    };
+
+                    var network = new vis.Network(container, data, options);
+
+                    //TODO: Выполнять в фоне
+                    response.edges.forEach(function (edge) {
+                        edges.add(edge)
+                    })
                 },
                 error: function () {
                     alert("Нет такого пользователя")

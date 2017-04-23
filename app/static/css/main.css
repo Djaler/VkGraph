@@ -5,6 +5,7 @@
 
 html, body, .container-table {
     height: 100%;
+    width: 100%;
 }
 
 .container-table {
@@ -21,6 +22,11 @@ html, body, .container-table {
     -webkit-animation-fill-mode: both;
     animation-duration: 1s;
     animation-fill-mode: both;
+}
+
+.graph-container {
+    height: 100%;
+    width: 100%;
 }
 
 @-webkit-keyframes flipInX {
