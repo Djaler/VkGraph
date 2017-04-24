@@ -1,3 +1,4 @@
 flask
 vk-api
 python-dotenv
+gunicorn
