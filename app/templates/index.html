@@ -47,14 +47,12 @@
                 success: function (response) {
                     $("#input-row").hide();
 
-                    var nodes = new vis.DataSet(response.nodes);
-
                     var edges = new vis.DataSet(/*response.edges*/);
 
                     var container = $('#graph-container')[0];
 
                     var data = {
-                        nodes: nodes,
+                        nodes: response.nodes,
                         edges: edges
                     };
                     var options = {
@@ -69,10 +67,19 @@
 
                     var network = new vis.Network(container, data, options);
 
-                    //TODO: Выполнять в фоне
-                    response.edges.forEach(function (edge) {
-                        edges.add(edge)
-                    })
+                    var i = 0, j = response.edges.length, chunk = 25;
+
+                    setTimeout(function go() {
+                        var temp = response.edges.slice(i, i + chunk);
+                        temp.forEach(function (edge) {
+                            edges.add(edge)
+                        });
+                        i += chunk;
+
+                        if (i < j) {
+                            setTimeout(go, 500);
+                        }
+                    }, 500);
                 },
                 error: function () {
                     alert("Нет такого пользователя")
