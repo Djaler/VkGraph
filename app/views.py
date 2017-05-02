@@ -29,8 +29,8 @@ def get_mutual_friends():
     edges = []
     for friend_id, links in mutual_friends.items():
         for link in links:
-            if {"from": link, "to": friend_id} not in edges:
-                edge = {"from": friend_id, "to": link}
+            if {"target": link, "source": friend_id} not in edges:
+                edge = {"target": friend_id, "source": link}
                 edges.append(edge)
 
     return jsonify(dict(nodes=nodes, edges=edges))

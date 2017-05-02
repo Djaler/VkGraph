@@ -8,12 +8,10 @@
     <link href="../static/css/bootstrap-material-design/bootstrap-material-design.min.css" rel="stylesheet">
     <link href="../static/css/bootstrap-material-design/ripples.min.css" rel="stylesheet">
 
-    <link href="../static/css/vis.min.css" rel="stylesheet">
-
     <link href="../static/css/main.css" rel="stylesheet">
 </head>
 <body>
-<div class="container container-table">
+<div class="container-fluid container-table">
     <div class="row vertical-center-row" id="input-row">
         <div class="col-md-4 col-md-offset-4">
             <div class="card flipInX animated">
@@ -25,54 +23,38 @@
             </div>
         </div>
     </div>
-    <div class="row">
-        <div class="col-md-12">
-            <div id="graph-container" class="graph-container"></div>
-        </div>
-    </div>
+    <div class="graph-container"></div>
 </div>
 <script src="../static/js/jquery-1.10.2.min.js"></script>
 <script src="../static/js/bootstrap.min.js"></script>
 <script src="../static/js/bootstrap-material-design/ripples.min.js"></script>
 <script src="../static/js/bootstrap-material-design/material.min.js"></script>
-<script src="../static/js/vis.min.js"></script>
+<script src="../static/js/d3plus.full.min.js"></script>
 <script>
     $(function () {
         $.material.init();
 
         $("#scan").click(function () {
+            $("#input-row").hide();
             $.ajax({
                 url: "mutual_friends",
                 data: {user_id: $("#userId").val()},
                 success: function (response) {
-                    $("#input-row").hide();
-
-                    var container = $('#graph-container')[0];
-
-                    var data = {
-                        nodes: response.nodes,
-                        edges: response.edges
-                    };
-
-                    var options = {
-                        nodes: {
-                            shape: 'circularImage',
-                            mass: 2
-                        }, physics: {
-                            enabled: false,
-                            solver: "barnesHut",
-                            maxVelocity: 10
-                        }
-                    };
-
-                    var network = new vis.Network(container, data, options);
-
-                    setTimeout(function () {
-                        options.physics.enabled = true;
-                        network.setOptions(options)
-                    }, 500);
+                    var graph = d3plus.viz()
+                        .format("ru_RU")
+                        .container(".graph-container")
+                        .resize(true)
+                        .type("network")
+                        .data(response.nodes)
+                        .edges(response.edges)
+                        .id("id")
+                        .text("label")
+                        .icon("image")
+                        .draw();
+                    graph.width($(".graph-container").width()).draw();
                 },
                 error: function () {
+                    $("#input-row").show();
                     alert("Нет такого пользователя")
                 }
             })
