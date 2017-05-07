@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 
-    <link href="../static/css/materialize.min.css" type="text/css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css">
     <link href="../static/css/material-icons.css" rel="stylesheet">
 
     <link href="../static/css/main.css" rel="stylesheet">
@@ -31,7 +31,7 @@
 </header>
 <main>
     <div class="container">
-        <div class="row valign-wrapper" id="input-row">
+        <div class="row full-height valign-wrapper" id="input-row">
             <div class="col s12 m6 offset-m3 l4 offset-l4">
                 <div class="card-panel flipIn">
                     <div class="input-field">
@@ -100,49 +100,86 @@
         </div>
     </div>
 </main>
-<script src="../static/js/jquery-2.1.1.min.js" type="text/javascript"></script>
-<script src="../static/js/materialize.min.js" type="text/javascript"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
 <script src="../static/js/d3plus.full.min.js" type="text/javascript"></script>
 <script>
-    $(document).ready(function () {
+    $(document).ready(() => {
         $(".button-collapse").sideNav();
 
-        $("#scan").click(function () {
-            $('.card-panel')
-                .toggleClass('flipIn')
-                .one('webkitAnimationEnd oanimationend msAnimationEnd animationend', function () {
-                    $("#input-row").hide();
-                    $("#container-row").toggleClass("hidden");
-                });
-            //TODO проверка существования пользователя перед загрузкой
+        $("#scan").click(() => {
+            //TODO проверка на отсутствие ID
+            getUser($("#userId").val())
+                .then(user => {
+                    $('.card-panel')
+                        .toggleClass('flipIn')
+                        .one('webkitAnimationEnd oanimationend msAnimationEnd animationend', () => {
+                            $("#input-row").hide();
+                            $("#container-row").toggleClass("hidden");
+                        });
 
-            $.ajax({
-                url: "mutual_friends",
-                data: {user_id: $("#userId").val()},
-                success: function (response) {
-                    d3plus.viz()
-                        .type("network")
-                        .format("ru_RU")
-                        .container("#container")
-                        .width({small: 700})
-                        .resize(true)
-                        .data(response.nodes)
-                        .edges(response.edges)
-                        .id("id")
-                        .text("name")
-                        .icon("photo")
-                        .draw(function () {
-                            $("#preloader").hide();
-                        }).draw(function () {
-                    });
-                },
-                error: function () {
-                    $("#input-row").show();
-                    $("#container-row").toggleClass("hidden");
-                    alert("Нет такого пользователя")
-                }
-            })
-        })
+                    getMutualFriends(user)
+                        .then(response => drawGraph(response.nodes, response.edges))
+                    //TODO Проверка на количество друзей
+                })
+                .catch(message => {
+                    if (message === "NO_USER") {
+                        return alert("Пользователя с таким ID не существует");
+                    } else if (message === "USER_DEACTIVATED") {
+                        return alert("Пользователь деактивирован");
+                    }
+                });
+        });
+
+        function drawGraph(nodes, edges) {
+            d3plus.viz()
+                .type("network")
+                .format({
+                    "text": text => {
+                        if (text === "primary connections") {
+                            return "Общие друзья";
+                        } else {
+                            return text;
+                        }
+                    }
+                })
+                .messages("Загрузка...")
+                .container("#container")
+                .width({small: 700})
+                .resize(true)
+                .data(nodes)
+                .edges(edges)
+                .id("id")
+                .text("name")
+                .icon("photo")
+                .draw(() => $("#preloader").hide())
+                .draw(() => {
+                });
+        }
+
+        function getUser(user_id) {
+            return new Promise((resolve, reject) => {
+                $.get("user", {user_id: user_id})
+                    .done(response => (response.status === "OK") ? resolve(response.data) : reject(response.data))
+                    .fail(() => reject());
+            });
+        }
+
+        function getMutualFriends(user) {
+            return new Promise((resolve, reject) => {
+                $.post({
+                    url: "mutual_friends",
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    data: JSON.stringify(user)
+                })
+                    .done(response => (response.status === "OK") ? resolve(response.data) : reject(response.data))
+                    .fail(() => reject());
+            });
+        }
     });
 </script>
 </body>

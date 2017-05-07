@@ -1,14 +1,18 @@
 class User:
-    def __init__(self, id, first_name, last_name, photo=""):
+    def __init__(self, id, name, photo):
         self._id = id
-        self._first_name = first_name
-        self._last_name = last_name
+        self._name = name
         self._photo = photo
     
     @staticmethod
-    def from_json(json):
-        return User(json['id'], json['first_name'], json['last_name'],
+    def from_vk_json(json):
+        return User(json['id'],
+                    "{} {}".format(json['first_name'], json['last_name']),
                     json['photo_200_orig'])
+    
+    @staticmethod
+    def from_json(json):
+        return User(json['id'], json['name'], json['photo'])
     
     @property
     def id(self):
@@ -16,7 +20,7 @@ class User:
     
     @property
     def name(self):
-        return "{} {}".format(self._first_name, self._last_name)
+        return self._name
     
     @property
     def photo(self):

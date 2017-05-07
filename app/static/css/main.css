@@ -1,15 +1,12 @@
-header {
-    height: 10vh;
-}
-
 main .container {
-    height: 90vh;
+    position: absolute;
+    top: 64px;
+    bottom: 0;
     max-width: 100%;
     width: 100%;
 }
 
 main .container .row {
-    height: 100%;
     width: 100%;
     margin: 0;
 }

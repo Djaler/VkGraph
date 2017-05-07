@@ -18,12 +18,16 @@ _vk = _session.get_api()
 def get_user(user_id, fields=None) -> User:
     if not fields:
         fields = _default_user_fields
+
     try:
         response = _vk.users.get(user_ids=user_id, fields=fields)
     except vk_api.ApiError:
         raise NoUserException
     else:
-        return User.from_json(response[0])
+        if 'deactivated' in response[0]:
+            raise UserDeactivatedException
+    
+        return User.from_vk_json(response[0])
 
 
 def get_friends(user_id: int, fields=None) -> List[User]:
@@ -32,7 +36,7 @@ def get_friends(user_id: int, fields=None) -> List[User]:
     
     response = _vk.friends.get(user_id=user_id, fields=fields)
 
-    return list(map(User.from_json, response['items']))
+    return list(map(User.from_vk_json, response['items']))
 
 
 def get_mutual_friends_ids(users: List[User],
@@ -51,4 +55,8 @@ def get_mutual_friends_ids(users: List[User],
 
 
 class NoUserException(Exception):
+    pass
+
+
+class UserDeactivatedException(Exception):
     pass

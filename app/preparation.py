@@ -3,9 +3,12 @@ from typing import Dict, Iterable, List
 from .model import User
 
 
+def prepare_user(user: User) -> Dict:
+    return dict(id=user.id, name=user.name, photo=user.photo)
+
+
 def prepare_nodes(users: Iterable[User]) -> List[Dict]:
-    return [dict(id=user.id, name=user.name, photo=user.photo) for user in
-            users]
+    return list(map(prepare_user, users))
 
 
 def prepare_edges(mutual_friends: Dict[int, List[int]]):
