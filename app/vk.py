@@ -1,9 +1,11 @@
 import os
-from typing import Dict, Iterable, List
+from typing import Dict, List
 
 import vk_api
 
 from .model import User
+
+_default_user_fields = ['id', 'first_name', 'last_name', 'photo_200_orig']
 
 token = os.environ.get("ACCESS_TOKEN")
 
@@ -13,29 +15,30 @@ _session.authorization()
 _vk = _session.get_api()
 
 
-def get_user(user_id) -> User:
+def get_user(user_id, fields=None) -> User:
+    if not fields:
+        fields = _default_user_fields
     try:
-        response = _vk.users.get(user_ids=user_id, fields=['id',
-                                                           'first_name',
-                                                           'last_name',
-                                                           'photo_200_orig'])
+        response = _vk.users.get(user_ids=user_id, fields=fields)
     except vk_api.ApiError:
         raise NoUserException
     else:
         return User.from_json(response[0])
 
 
-def get_friends(user_id: int, fields=None) -> Iterable[User]:
+def get_friends(user_id: int, fields=None) -> List[User]:
     if not fields:
-        fields = ['id', 'first_name', 'last_name', 'photo_200_orig']
+        fields = _default_user_fields
     
     response = _vk.friends.get(user_id=user_id, fields=fields)
+
+    return list(map(User.from_json, response['items']))
+
+
+def get_mutual_friends_ids(users: List[User],
+                           my_id: int) -> Dict[int, List[int]]:
+    users_ids = [user.id for user in users]
     
-    return map(User.from_json, response['items'])
-
-
-def get_mutual_friends(users_ids: List[int],
-                       my_id: int) -> Dict[int, List[int]]:
     with vk_api.VkRequestsPool(_session) as pool:
         response = pool.method_one_param(
             'friends.getMutual',
