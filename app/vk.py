@@ -26,8 +26,14 @@ def get_user(user_id, fields=None) -> User:
     else:
         if 'deactivated' in response[0]:
             raise UserDeactivatedException
-    
+
         return User.from_vk_json(response[0])
+
+
+def get_friends_count(user_id: int) -> int:
+    response = _vk.friends.get(user_id=user_id)
+    
+    return response['count']
 
 
 def get_friends(user_id: int, fields=None) -> List[User]:

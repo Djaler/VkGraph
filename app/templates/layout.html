@@ -37,8 +37,10 @@
     </div>
 </header>
 <main>
-    {% block body %}{% endblock %}
+    {% block main %}{% endblock %}
 </main>
+{% include "modal.html" %}
+
 {% block scripts %}
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"
             integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="

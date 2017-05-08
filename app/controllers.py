@@ -29,7 +29,10 @@ def get_user():
     
     try:
         user = vk.get_user(user_id)
-        response = Response(Status.OK, prepare_user(user))
+        if vk.get_friends_count(user.id) > 0:
+            response = Response(Status.OK, prepare_user(user))
+        else:
+            response = Response(Status.ERROR, "NO_FRIENDS")
     except vk.NoUserException:
         response = Response(Status.ERROR, "NO_USER")
     except vk.UserDeactivatedException:

@@ -76,6 +76,8 @@ $(document).ready(() => {
     });
 
     scanButton.click(() => {
+        scanButton.prop("disabled", true);
+
         getUser($("#userId").val())
             .then((user) => {
                 hideCard();
@@ -93,14 +95,20 @@ $(document).ready(() => {
 
                         return drawGraph(nodes, edges);
                     });
-                //TODO Проверка на количество друзей
             })
             .catch((message) => {
+                let text;
                 if (message === "NO_USER") {
-                    return alert("Пользователя с таким ID не существует");
+                    text = "Пользователя с таким ID не существует";
                 } else if (message === "USER_DEACTIVATED") {
-                    return alert("Пользователь деактивирован");
+                    text = "Пользователь деактивирован";
+                } else if (message === "NO_FRIENDS") {
+                    text = "У пользователя отсутствуют друзья";
+                } else {
+                    text = "Произошла непредвиденная ошибка";
                 }
+                openModal("Ошибка", text);
+                scanButton.prop("disabled", false);
             });
     });
 });
