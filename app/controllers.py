@@ -18,6 +18,11 @@ def mutual_friends_page():
     return render_template("mutual_friends.html")
 
 
+@app.route("/deep_search")
+def deep_search_page():
+    return redirect(url_for("mutual_friends_page"))
+
+
 @app.route("/api/user")
 def get_user():
     user_id = request.args.get("user_id")

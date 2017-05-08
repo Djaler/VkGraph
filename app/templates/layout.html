@@ -1,3 +1,4 @@
+{% from "macros.html" import nav_link with context %}
 <html>
 <head>
     {% block head %}
@@ -23,12 +24,8 @@
                     <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
                     <ul class="right hide-on-med-and-down">
                         {% block nav_items %}
-                            <li {%- if request.path == url_for('mutual_friends_page') %} class="active"{% endif %}>
-                                <a href="{{ url_for('mutual_friends_page') }}">Общие друзья</a>
-                            </li>
-                            <li>
-                                <a>Глубинный поиск</a>
-                            </li>
+                            {{ nav_link('mutual_friends_page','Общие друзья') }}
+                            {{ nav_link('deep_search_page','Глубинный поиск') }}
                         {% endblock %}
                     </ul>
                     <ul class="side-nav" id="mobile-demo">
