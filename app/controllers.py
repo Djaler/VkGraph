@@ -2,7 +2,8 @@ from flask import jsonify, redirect, render_template, request, url_for
 
 from . import app, vk
 from .model import User
-from .preparation import prepare_edges, prepare_nodes, prepare_user
+from .preparation import prepare_friends_connections, prepare_user, \
+    prepare_users
 from .response import Response, Status
 
 
@@ -35,12 +36,14 @@ def get_user():
 @app.route("/api/mutual_friends", methods=['POST'])
 def get_mutual_friends():
     user = User.from_json(request.get_json())
-    
-    friends = vk.get_friends(user.id) + [user]
+
+    friends = vk.get_friends(user.id)
     
     mutual_friends = vk.get_mutual_friends_ids(friends, user.id)
-    
-    response = Response(Status.OK, dict(nodes=prepare_nodes(friends),
-                                        edges=prepare_edges(mutual_friends)))
+
+    response = Response(Status.OK,
+                        dict(friends=prepare_users(friends),
+                             friends_connections=prepare_friends_connections(
+                                 mutual_friends)))
     
     return jsonify(response)

@@ -1,9 +1,15 @@
 main .container {
-    position: absolute;
-    top: 64px;
+    position: fixed;
+    top: 56px;
     bottom: 0;
     max-width: 100%;
     width: 100%;
+}
+
+@media only screen and (min-width: 601px) {
+    main .container {
+        top: 64px;
+    }
 }
 
 main .container .row {

@@ -15,27 +15,29 @@
 </head>
 <body class="grey lighten-3">
 <header>
-    <nav>
-        <div class="container">
-            <div class="nav-wrapper">
-                <a href="/" class="brand-logo">Vk Graph</a>
-                <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
-                <ul class="right hide-on-med-and-down">
-                    {% block nav_items %}
-                        <li {%- if request.path == url_for('mutual_friends_page') %} class="active"{% endif %}>
-                            <a href="{{ url_for('mutual_friends_page') }}">Общие друзья</a>
-                        </li>
-                        <li>
-                            <a>Глубинный поиск</a>
-                        </li>
-                    {% endblock %}
-                </ul>
-                <ul class="side-nav" id="mobile-demo">
-                    {{ self.nav_items() }}
-                </ul>
+    <div class="navbar-fixed">
+        <nav>
+            <div class="container">
+                <div class="nav-wrapper">
+                    <a href="/" class="brand-logo">Vk Graph</a>
+                    <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+                    <ul class="right hide-on-med-and-down">
+                        {% block nav_items %}
+                            <li {%- if request.path == url_for('mutual_friends_page') %} class="active"{% endif %}>
+                                <a href="{{ url_for('mutual_friends_page') }}">Общие друзья</a>
+                            </li>
+                            <li>
+                                <a>Глубинный поиск</a>
+                            </li>
+                        {% endblock %}
+                    </ul>
+                    <ul class="side-nav" id="mobile-demo">
+                        {{ self.nav_items() }}
+                    </ul>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+    </div>
 </header>
 <main>
     {% block body %}{% endblock %}

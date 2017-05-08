@@ -6,7 +6,16 @@ $(document).ready(() => {
                 hideCard();
 
                 getMutualFriends(user)
-                    .then(response => drawGraph(response.nodes, response.edges))
+                    .then(response => {
+                        let nodes = response.friends.concat(user);
+                        let edges = response.friends_connections;
+                        response.friends.forEach((friend) => edges.push({
+                            source: user.id,
+                            target: friend.id
+                        }));
+
+                        return drawGraph(nodes, edges);
+                    })
                 //TODO Проверка на количество друзей
             })
             .catch(message => {
@@ -33,6 +42,7 @@ function drawGraph(nodes, edges) {
         })
         .messages("Загрузка...")
         .container("#container")
+        .background("#eeeeee")
         .width({small: 700})
         .resize(true)
         .data(nodes)
