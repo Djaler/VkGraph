@@ -1,4 +1,4 @@
-from flask import jsonify, render_template, request
+from flask import jsonify, redirect, render_template, request, url_for
 
 from . import app, vk
 from .model import User
@@ -8,11 +8,16 @@ from .response import Response, Status
 
 @app.route("/")
 @app.route("/index")
-def index():
-    return render_template("index.html")
+def index_page():
+    return redirect(url_for("mutual_friends_page"))
 
 
-@app.route("/user")
+@app.route("/mutual_friends")
+def mutual_friends_page():
+    return render_template("mutual_friends.html")
+
+
+@app.route("/api/user")
 def get_user():
     user_id = request.args.get("user_id")
     
@@ -27,7 +32,7 @@ def get_user():
     return jsonify(response)
 
 
-@app.route("/mutual_friends", methods=["POST"])
+@app.route("/api/mutual_friends", methods=['POST'])
 def get_mutual_friends():
     user = User.from_json(request.get_json())
     

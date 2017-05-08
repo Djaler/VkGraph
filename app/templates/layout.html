@@ -1,0 +1,46 @@
+<html>
+<head>
+    <title>VkGraph</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css" rel="stylesheet">
+
+    <link type=text/css href="{{ url_for('static', filename='css/style.css') }}" rel=stylesheet>
+
+    {% block styles %}{% endblock %}
+</head>
+<body class="grey lighten-3">
+<header>
+    <nav>
+        <div class="container">
+            <div class="nav-wrapper">
+                <a href="#" class="brand-logo">Vk Graph</a>
+                <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
+                <ul class="right hide-on-med-and-down">
+                    <li class="active"><a>Общие друзья</a></li>
+                    <li><a>Глубинный поиск</a></li>
+                </ul>
+                <ul class="side-nav" id="mobile-demo">
+                    <li class="active"><a>Общие друзья</a></li>
+                    <li><a>Глубинный поиск</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<main>
+    {% block body %}{% endblock %}
+</main>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>
