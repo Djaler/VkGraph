@@ -1,46 +1,8 @@
-$(document).ready(() => {
-    const userIdInput = $("#userId");
-    const scanButton = $("#scan");
-
-    userIdInput.on('input propertychange paste', () => {
-        scanButton.prop("disabled", userIdInput.val() === "")
-    });
-
-    scanButton.click(() => {
-        getUser($("#userId").val())
-            .then(user => {
-                hideCard();
-
-                getMutualFriends(user)
-                    .then(response => {
-                        const nodes = response.friends.concat(user);
-                        const edges = response.friends_connections;
-                        for (const friend of response.friends) {
-                            edges.push({
-                                source: user.id,
-                                target: friend.id
-                            });
-                        }
-
-                        return drawGraph(nodes, edges);
-                    })
-                //TODO Проверка на количество друзей
-            })
-            .catch(message => {
-                if (message === "NO_USER") {
-                    return alert("Пользователя с таким ID не существует");
-                } else if (message === "USER_DEACTIVATED") {
-                    return alert("Пользователь деактивирован");
-                }
-            });
-    });
-});
-
 function drawGraph(nodes, edges) {
     d3plus.viz()
         .type("network")
         .format({
-            "text": text => {
+            "text": (text) => {
                 if (text === "primary connections") {
                     return "Общие друзья";
                 } else {
@@ -63,8 +25,8 @@ function drawGraph(nodes, edges) {
         });
 }
 
-function getUser(user_id) {
-    return promiseGet("api/user", {user_id: user_id});
+function getUser(userId) {
+    return promiseGet("api/user", {user_id: userId});
 }
 
 function getMutualFriends(user) {
@@ -76,16 +38,7 @@ function showCard() {
     $("#input-row").show();
     $("#container-row").addClass("hidden");
 
-    $('.card-panel').toggleClass('flipIn');
-}
-
-function hideCard() {
-    $('.card-panel')
-        .toggleClass('flipIn')
-        .one(whichAnimationEvent(), () => {
-            $("#input-row").hide();
-            $("#container-row").removeClass("hidden");
-        });
+    $(".card-panel").toggleClass("flipIn");
 }
 
 function whichAnimationEvent() {
@@ -99,8 +52,55 @@ function whichAnimationEvent() {
     };
 
     for (let animation in animations) {
-        if (el.style[animation] !== undefined) {
+        if (typeof el.style[animation] !== "undefined") {
             return animations[animation];
         }
     }
 }
+
+function hideCard() {
+    $(".card-panel")
+        .toggleClass("flipIn")
+        .one(whichAnimationEvent(), () => {
+            $("#input-row").hide();
+            $("#container-row").removeClass("hidden");
+        });
+}
+
+$(document).ready(() => {
+    const userIdInput = $("#userId");
+    const scanButton = $("#scan");
+
+    userIdInput.on("input propertychange paste", () => {
+        scanButton.prop("disabled", userIdInput.val() === "");
+    });
+
+    scanButton.click(() => {
+        getUser($("#userId").val())
+            .then((user) => {
+                hideCard();
+
+                getMutualFriends(user)
+                    .then((response) => {
+                        const nodes = response.friends.concat(user);
+                        const edges = response.friends_connections;
+                        for (const friend of response.friends) {
+                            edges.push({
+                                source: user.id,
+                                target: friend.id
+                            });
+                        }
+
+                        return drawGraph(nodes, edges);
+                    });
+                //TODO Проверка на количество друзей
+            })
+            .catch((message) => {
+                if (message === "NO_USER") {
+                    return alert("Пользователя с таким ID не существует");
+                } else if (message === "USER_DEACTIVATED") {
+                    return alert("Пользователь деактивирован");
+                }
+            });
+    });
+});
