@@ -1,18 +1,26 @@
 $(document).ready(() => {
-    $("#scan").click(() => {
-        //TODO проверка на отсутствие ID
+    const userIdInput = $("#userId");
+    const scanButton = $("#scan");
+
+    userIdInput.on('input propertychange paste', () => {
+        scanButton.prop("disabled", userIdInput.val() === "")
+    });
+
+    scanButton.click(() => {
         getUser($("#userId").val())
             .then(user => {
                 hideCard();
 
                 getMutualFriends(user)
                     .then(response => {
-                        let nodes = response.friends.concat(user);
-                        let edges = response.friends_connections;
-                        response.friends.forEach((friend) => edges.push({
-                            source: user.id,
-                            target: friend.id
-                        }));
+                        const nodes = response.friends.concat(user);
+                        const edges = response.friends_connections;
+                        for (const friend of response.friends) {
+                            edges.push({
+                                source: user.id,
+                                target: friend.id
+                            });
+                        }
 
                         return drawGraph(nodes, edges);
                     })
@@ -63,6 +71,7 @@ function getMutualFriends(user) {
     return promisePost("api/mutual_friends", JSON.stringify(user));
 }
 
+//TODO возможность возврата к панели ввода ID
 function showCard() {
     $("#input-row").show();
     $("#container-row").addClass("hidden");
