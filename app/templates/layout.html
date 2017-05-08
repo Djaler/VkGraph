@@ -18,15 +18,20 @@
     <nav>
         <div class="container">
             <div class="nav-wrapper">
-                <a href="#" class="brand-logo">Vk Graph</a>
+                <a href="/" class="brand-logo">Vk Graph</a>
                 <a href="#" data-activates="mobile-demo" class="button-collapse"><i class="material-icons">menu</i></a>
                 <ul class="right hide-on-med-and-down">
-                    <li class="active"><a>Общие друзья</a></li>
-                    <li><a>Глубинный поиск</a></li>
+                    {% block nav_items %}
+                        <li {%- if request.path == url_for('mutual_friends_page') %} class="active"{% endif %}>
+                            <a href="{{ url_for('mutual_friends_page') }}">Общие друзья</a>
+                        </li>
+                        <li>
+                            <a>Глубинный поиск</a>
+                        </li>
+                    {% endblock %}
                 </ul>
                 <ul class="side-nav" id="mobile-demo">
-                    <li class="active"><a>Общие друзья</a></li>
-                    <li><a>Глубинный поиск</a></li>
+                    {{ self.nav_items() }}
                 </ul>
             </div>
         </div>
