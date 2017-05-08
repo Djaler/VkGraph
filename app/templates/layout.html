@@ -1,17 +1,17 @@
 <html>
 <head>
-    <title>VkGraph</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    {% block head %}
+        <title>VkGraph</title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 
-    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css" rel="stylesheet">
 
-    <link type=text/css href="{{ url_for('static', filename='css/style.css') }}" rel=stylesheet>
-
-    {% block styles %}{% endblock %}
+        <link type=text/css href="{{ url_for('static', filename='css/style.css') }}" rel=stylesheet>
+    {% endblock %}
 </head>
 <body class="grey lighten-3">
 <header>
@@ -35,12 +35,13 @@
 <main>
     {% block body %}{% endblock %}
 </main>
-<script src="https://code.jquery.com/jquery-3.2.1.min.js"
-        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
-        crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
+{% block scripts %}
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
 
-<script src="{{ url_for('static', filename='js/app.js') }}"></script>
-{% block scripts %}{% endblock %}
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+{% endblock %}
 </body>
 </html>

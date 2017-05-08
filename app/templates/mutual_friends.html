@@ -1,6 +1,7 @@
 {% extends "layout.html" %}
 
-{% block styles %}
+{% block head %}
+    {{ super() }}
     <link type=text/css href="{{ url_for('static', filename='css/animations.css') }}" rel=stylesheet>
 {% endblock %}
 
@@ -22,54 +23,8 @@
         </div>
         <div class="row hidden" id="container-row">
             <div class="col s12 full-height valign-wrapper no-padding" id="container">
-                <div class="preloader-wrapper big active center-block" id="preloader">
-                    <div class="spinner-layer spinner-blue">
-                        <div class="circle-clipper left">
-                            <div class="circle"></div>
-                        </div>
-                        <div class="gap-patch">
-                            <div class="circle"></div>
-                        </div>
-                        <div class="circle-clipper right">
-                            <div class="circle"></div>
-                        </div>
-                    </div>
-
-                    <div class="spinner-layer spinner-red">
-                        <div class="circle-clipper left">
-                            <div class="circle"></div>
-                        </div>
-                        <div class="gap-patch">
-                            <div class="circle"></div>
-                        </div>
-                        <div class="circle-clipper right">
-                            <div class="circle"></div>
-                        </div>
-                    </div>
-
-                    <div class="spinner-layer spinner-yellow">
-                        <div class="circle-clipper left">
-                            <div class="circle"></div>
-                        </div>
-                        <div class="gap-patch">
-                            <div class="circle"></div>
-                        </div>
-                        <div class="circle-clipper right">
-                            <div class="circle"></div>
-                        </div>
-                    </div>
-
-                    <div class="spinner-layer spinner-green">
-                        <div class="circle-clipper left">
-                            <div class="circle"></div>
-                        </div>
-                        <div class="gap-patch">
-                            <div class="circle"></div>
-                        </div>
-                        <div class="circle-clipper right">
-                            <div class="circle"></div>
-                        </div>
-                    </div>
+                <div id="preloader" class="center-block">
+                    {% include "preloader.html" %}
                 </div>
             </div>
         </div>
@@ -77,6 +32,7 @@
 {% endblock %}
 
 {% block scripts %}
+    {{ super() }}
     <script src="{{ url_for('static', filename='js/d3plus.full.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/mutual_friends.js') }}"></script>
 {% endblock %}
