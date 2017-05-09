@@ -71,7 +71,7 @@ $(document).ready(() => {
     const userIdInput = $("#userId");
     const scanButton = $("#scan");
 
-    userIdInput.on("input propertychange paste", () => {
+    userIdInput.on("change propertychange keydown keyup cut paste click input", () => {
         scanButton.prop("disabled", userIdInput.val() === "");
     });
 
@@ -103,7 +103,7 @@ $(document).ready(() => {
                 } else if (message === "USER_DEACTIVATED") {
                     text = "Пользователь деактивирован";
                 } else if (message === "NO_FRIENDS") {
-                    text = "У пользователя отсутствуют друзья";
+                    text = "У пользователя отсутствуют или скрыты друзья";
                 } else {
                     text = "Произошла непредвиденная ошибка";
                 }

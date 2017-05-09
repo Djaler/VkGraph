@@ -9,10 +9,15 @@ _default_user_fields = ['id', 'first_name', 'last_name', 'photo_200_orig']
 
 token = os.environ.get("ACCESS_TOKEN")
 
-_session = vk_api.VkApi(token=token)
-_session.authorization()
+_session = vk_api.VkApi()
 
 _vk = _session.get_api()
+
+
+def authorized_session():
+    session = vk_api.VkApi(token=token)
+    session.authorization()
+    return session
 
 
 def get_user(user_id, fields=None) -> User:
@@ -48,8 +53,8 @@ def get_friends(user_id: int, fields=None) -> List[User]:
 def get_mutual_friends_ids(users: List[User],
                            my_id: int) -> Dict[int, List[int]]:
     users_ids = [user.id for user in users]
-    
-    with vk_api.VkRequestsPool(_session) as pool:
+
+    with vk_api.VkRequestsPool(authorized_session()) as pool:
         response = pool.method_one_param(
             'friends.getMutual',
             key='target_uid',
