@@ -1,26 +1,10 @@
-from flask import jsonify, redirect, render_template, request, url_for
+from flask import jsonify, request
 
 from . import app, vk
 from .model import User
-from .preparation import prepare_friends_connections, prepare_user, \
-    prepare_users
+from .preparation import (prepare_friends_connections, prepare_user,
+                          prepare_users)
 from .response import Response, Status
-
-
-@app.route("/")
-@app.route("/index")
-def index_page():
-    return redirect(url_for("mutual_friends_page"))
-
-
-@app.route("/mutual_friends")
-def mutual_friends_page():
-    return render_template("mutual_friends.html")
-
-
-@app.route("/deep_search")
-def deep_search_page():
-    return redirect(url_for("mutual_friends_page"))
 
 
 @app.route("/api/user")
