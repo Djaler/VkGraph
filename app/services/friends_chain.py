@@ -44,7 +44,7 @@ def _find_common_friend(root_id: int, tree: Tree, max_depth: SupportsInt):
     return check_next_level([root_id], 2, [])
 
 
-def get_friends_chain(user1: int, user2: int, max_length: int):
+def get_chain(user1: int, user2: int, max_length: int):
     depth = (max_length + 1) / 2
     
     tree = _build_tree(user1, max_depth=ceil(depth))
@@ -57,4 +57,4 @@ def get_friends_chain(user1: int, user2: int, max_length: int):
     friend, parents = result
     
     return (
-        *tree.get_by_id(friend).parents[1:], friend, *reversed(parents)[:-1])
+        *tree.get_by_id(friend).parents[1:], friend, *reversed(parents[1:]))

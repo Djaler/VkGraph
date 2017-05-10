@@ -30,3 +30,51 @@ function openModal(title, text) {
 
     $(".modal").modal("open");
 }
+
+function getUser(userId) {
+    return promiseGet("api/user", {user_id: userId});
+}
+
+function catchError(message) {
+    let text;
+    if (typeof message === "undefined") {
+        text = "Произошла непредвиденная ошибка";
+    } else {
+        text = message;
+    }
+    openModal("Ошибка", text);
+}
+
+//TODO возможность возврата к панели ввода ID
+function showCard() {
+    $("#input-row").show();
+    $("#container-row").addClass("hidden");
+
+    $(".card-panel").toggleClass("flipIn");
+}
+
+function whichAnimationEvent() {
+    const el = document.createElement("fakeelement");
+
+    const animations = {
+        "animation": "animationend",
+        "OAnimation": "oAnimationEnd",
+        "MozAnimation": "animationend",
+        "WebkitAnimation": "webkitAnimationEnd"
+    };
+
+    for (let animation in animations) {
+        if (typeof el.style[animation] !== "undefined") {
+            return animations[animation];
+        }
+    }
+}
+
+function hideCard() {
+    $(".card-panel")
+        .toggleClass("flipIn")
+        .one(whichAnimationEvent(), () => {
+            $("#input-row").hide();
+            $("#container-row").removeClass("hidden");
+        });
+}

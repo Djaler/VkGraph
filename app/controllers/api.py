@@ -1,10 +1,8 @@
 from flask import jsonify, request
 
 from .. import app
-from ..model import User
 from ..model.response import Response, Status
-from ..services import vk
-from ..services.friends_chain import get_friends_chain
+from ..services import friends_chain, vk
 from ..services.preparation import (prepare_friends_connections, prepare_user,
                                     prepare_users)
 
@@ -18,23 +16,25 @@ def get_user():
         if vk.get_friends_count(user.id) > 0:
             response = Response(Status.OK, prepare_user(user))
         else:
-            response = Response(Status.ERROR, "NO_FRIENDS")
+            response = Response(Status.ERROR, "У пользователя отсутствуют "
+                                              "или скрыты друзья")
     except vk.NoUserException:
-        response = Response(Status.ERROR, "NO_USER")
+        response = Response(Status.ERROR, "Пользователя с таким ID не "
+                                          "существует")
     except vk.UserDeactivatedException:
-        response = Response(Status.ERROR, "USER_DEACTIVATED")
-
+        response = Response(Status.ERROR, "Пользователь деактивирован")
+    
     return jsonify(response)
 
 
-@app.route("/api/mutual_friends", methods=['POST'])
+@app.route("/api/mutual_friends")
 def get_mutual_friends():
-    user = User.from_json(request.get_json())
-
-    friends = vk.get_friends(user.id)
+    user_id = request.args.get("user_id")
     
-    mutual_friends = vk.get_mutual_friends_ids(friends, user.id)
-
+    friends = vk.get_friends(user_id)
+    
+    mutual_friends = vk.get_mutual_friends_ids(friends, user_id)
+    
     response = Response(Status.OK,
                         dict(friends=prepare_users(friends),
                              friends_connections=prepare_friends_connections(
@@ -43,15 +43,18 @@ def get_mutual_friends():
     return jsonify(response)
 
 
-@app.route("/api/friends_chain", methods=['POST'])
+@app.route("/api/friends_chain")
 def get_friends_chain():
-    json = request.get_json()
-    user1, user2 = User.from_json(json[0]), User.from_json(json[1])
+    user1_id = request.args.get("user1Id")
+    user2_id = request.args.get("user2Id")
+    chain_length = int(request.args.get("chainLength"))
     
-    chain = get_friends_chain(user1, user2, 5)
+    chain = friends_chain.get_chain(user1_id, user2_id, chain_length)
     
     if chain:
-        response = Response(Status.OK, list(map(vk.get_user, chain)))
+        response = Response(Status.OK,
+                            [prepare_user(vk.get_user(user)) for user in
+                             chain])
     else:
         response = Response(Status.OK, None)
     

@@ -26,46 +26,8 @@ function drawGraph(userId, nodes, edges) {
         });
 }
 
-function getUser(userId) {
-    return promiseGet("api/user", {user_id: userId});
-}
-
 function getMutualFriends(user) {
-    return promisePost("api/mutual_friends", JSON.stringify(user));
-}
-
-//TODO возможность возврата к панели ввода ID
-function showCard() {
-    $("#input-row").show();
-    $("#container-row").addClass("hidden");
-
-    $(".card-panel").toggleClass("flipIn");
-}
-
-function whichAnimationEvent() {
-    const el = document.createElement("fakeelement");
-
-    const animations = {
-        "animation": "animationend",
-        "OAnimation": "oAnimationEnd",
-        "MozAnimation": "animationend",
-        "WebkitAnimation": "webkitAnimationEnd"
-    };
-
-    for (let animation in animations) {
-        if (typeof el.style[animation] !== "undefined") {
-            return animations[animation];
-        }
-    }
-}
-
-function hideCard() {
-    $(".card-panel")
-        .toggleClass("flipIn")
-        .one(whichAnimationEvent(), () => {
-            $("#input-row").hide();
-            $("#container-row").removeClass("hidden");
-        });
+    return promiseGet("api/mutual_friends", {user_id: user.id});
 }
 
 $(document).ready(() => {
@@ -79,7 +41,7 @@ $(document).ready(() => {
     scanButton.click(() => {
         scanButton.prop("disabled", true);
 
-        getUser($("#userId").val())
+        getUser(userIdInput.val())
             .then((user) => {
                 hideCard();
 
@@ -98,17 +60,7 @@ $(document).ready(() => {
                     });
             })
             .catch((message) => {
-                let text;
-                if (message === "NO_USER") {
-                    text = "Пользователя с таким ID не существует";
-                } else if (message === "USER_DEACTIVATED") {
-                    text = "Пользователь деактивирован";
-                } else if (message === "NO_FRIENDS") {
-                    text = "У пользователя отсутствуют или скрыты друзья";
-                } else {
-                    text = "Произошла непредвиденная ошибка";
-                }
-                openModal("Ошибка", text);
+                catchError(message);
                 scanButton.prop("disabled", false);
             });
     });
