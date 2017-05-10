@@ -1,6 +1,6 @@
 from flask import redirect, render_template, url_for
 
-from . import app
+from .. import app
 
 
 @app.route("/")
@@ -14,6 +14,6 @@ def mutual_friends_page():
     return render_template("mutual_friends.html")
 
 
-@app.route("/deep_search")
-def deep_search_page():
-    return redirect(url_for("index_page"))
+@app.route("/friends_chain")
+def friends_chain_page():
+    return render_template("friends_chain.html")

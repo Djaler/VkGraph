@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block head %}
+    {{ super() }}
+    <link type=text/css href="{{ url_for('static', filename='css/animations.css') }}" rel=stylesheet>
+{% endblock %}
+
+{% block main %}
+    <div class="container">
+        <div class="row full-height valign-wrapper" id="input-row">
+            <div class="col s12 m6 offset-m3 l4 offset-l4">
+                <div class="card-panel flipIn">
+                    <div class="input-field">
+                        <i class="material-icons prefix">account_circle</i>
+                        <input class="validate" id="userId" type="text">
+                        <label for="userId">Id пользователя Вконтакте</label>
+                        <div class="center-align">
+                            <button class="btn waves-effect waves-light" id="scan" disabled>Сканировать</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row hidden" id="container-row">
+            <div class="col s12 full-height valign-wrapper no-padding" id="container">
+                <div id="preloader" class="center-block">
+                    {% include "preloader.html" %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script src="{{ url_for('static', filename='js/friends_chain.js') }}"></script>
+{% endblock %}

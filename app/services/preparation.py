@@ -1,6 +1,6 @@
 from typing import Dict, Iterable, List
 
-from .model import User
+from ..model import User
 
 
 def prepare_user(user: User) -> Dict:

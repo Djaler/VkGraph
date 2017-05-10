@@ -1,10 +1,12 @@
 from flask import jsonify, request
 
-from . import app, vk
-from .model import User
-from .preparation import (prepare_friends_connections, prepare_user,
-                          prepare_users)
-from .response import Response, Status
+from .. import app
+from ..model import User
+from ..model.response import Response, Status
+from ..services import vk
+from ..services.friends_chain import get_friends_chain
+from ..services.preparation import (prepare_friends_connections, prepare_user,
+                                    prepare_users)
 
 
 @app.route("/api/user")
@@ -37,5 +39,20 @@ def get_mutual_friends():
                         dict(friends=prepare_users(friends),
                              friends_connections=prepare_friends_connections(
                                  mutual_friends)))
+    
+    return jsonify(response)
+
+
+@app.route("/api/friends_chain", methods=['POST'])
+def get_friends_chain():
+    json = request.get_json()
+    user1, user2 = User.from_json(json[0]), User.from_json(json[1])
+    
+    chain = get_friends_chain(user1, user2, 5)
+    
+    if chain:
+        response = Response(Status.OK, list(map(vk.get_user, chain)))
+    else:
+        response = Response(Status.OK, None)
     
     return jsonify(response)

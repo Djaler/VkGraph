@@ -1,9 +1,10 @@
 import os
-from typing import Dict, List
+from typing import Dict, List, SupportsInt
 
 import vk_api
 
-from .model import User
+from ..model import User
+from ..utils import chunks
 
 _default_user_fields = ['id', 'first_name', 'last_name', 'photo_200_orig']
 
@@ -16,12 +17,10 @@ _authorized_session.authorization()
 _authorized_api = _authorized_session.get_api()
 
 
-def get_user(user_id, fields=None) -> User:
-    if not fields:
-        fields = _default_user_fields
-
+def get_user(user_id) -> User:
     try:
-        response = _incognito_api.users.get(user_ids=user_id, fields=fields,
+        response = _incognito_api.users.get(user_ids=user_id,
+                                            fields=_default_user_fields,
                                             lang="ru")
     except vk_api.ApiError:
         raise NoUserException
@@ -38,14 +37,23 @@ def get_friends_count(user_id: int) -> int:
     return response['count']
 
 
-def get_friends(user_id: int, fields=None) -> List[User]:
-    if not fields:
-        fields = _default_user_fields
-
-    response = _incognito_api.friends.get(user_id=user_id, fields=fields,
+def get_friends(user_id: int) -> List[User]:
+    response = _incognito_api.friends.get(user_id=user_id,
+                                          fields=_default_user_fields,
                                           lang="ru")
     
     return list(map(User.from_vk_json, response['items']))
+
+
+def get_friends_ids(users_ids: List[SupportsInt]) -> List[List[int]]:
+    user_ids_str = list(map(str, users_ids))
+    
+    result = []
+    for chunk in chunks(user_ids_str, 25):
+        response = _authorized_api.execute.friends(targets=",".join(chunk))
+        result.extend(response)
+    
+    return result
 
 
 def get_mutual_friends_ids(users: List[User],
