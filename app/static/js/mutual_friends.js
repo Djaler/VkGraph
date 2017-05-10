@@ -1,10 +1,10 @@
-function drawGraph(nodes, edges) {
+function drawGraph(userId, nodes, edges) {
     d3plus.viz()
         .type("network")
         .format({
             "text": (text) => {
                 if (text === "primary connections") {
-                    return "Общие друзья";
+                    return "Друзья";
                 } else {
                     return text;
                 }
@@ -17,6 +17,7 @@ function drawGraph(nodes, edges) {
         .resize(true)
         .data(nodes)
         .edges(edges)
+        .focus(userId)
         .id("id")
         .text("name")
         .icon("photo")
@@ -93,7 +94,7 @@ $(document).ready(() => {
                             });
                         }
 
-                        return drawGraph(nodes, edges);
+                        return drawGraph(user.id, nodes, edges);
                     });
             })
             .catch((message) => {

@@ -21,7 +21,8 @@ def get_user(user_id, fields=None) -> User:
         fields = _default_user_fields
 
     try:
-        response = _authorized_api.users.get(user_ids=user_id, fields=fields)
+        response = _incognito_api.users.get(user_ids=user_id, fields=fields,
+                                            lang="ru")
     except vk_api.ApiError:
         raise NoUserException
     else:
@@ -41,7 +42,8 @@ def get_friends(user_id: int, fields=None) -> List[User]:
     if not fields:
         fields = _default_user_fields
 
-    response = _authorized_api.friends.get(user_id=user_id, fields=fields)
+    response = _incognito_api.friends.get(user_id=user_id, fields=fields,
+                                          lang="ru")
     
     return list(map(User.from_vk_json, response['items']))
 
