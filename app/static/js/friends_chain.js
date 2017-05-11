@@ -43,6 +43,7 @@ $(document).ready(() => {
     scanButton.click(() => {
         scanButton.prop("disabled", true);
 
+        //TODO Проверка обоих пользователей одновременно
         getUser(userId1Input.val())
             .then((user1) => {
                 getUser(userId2Input.val())
@@ -59,6 +60,7 @@ $(document).ready(() => {
                                 if (response === null) {
                                     catchError("Не удалось найти цепочку");
                                     showCard();
+                                    scanButton.prop("disabled", false);
                                     return;
                                 }
                                 $("#preloader").hide();

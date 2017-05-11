@@ -32,18 +32,15 @@ function catchError(message) {
     openModal("Ошибка", text);
 }
 
-function toggleFlip(element) {
-    element.toggleClass("flipIn");
-    element.toggleClass("flipOut");
-}
-
 const inputCard = $("#input-card");
 
 function showCard() {
     $("#input-row").show();
     $("#container-row").addClass("hidden");
 
-    toggleFlip(inputCard);
+    inputCard
+        .addClass("flipIn")
+        .removeClass("flipOut");
 }
 
 function whichAnimationEvent() {
@@ -65,9 +62,10 @@ function whichAnimationEvent() {
 
 function hideCard() {
     inputCard
+        .removeClass("flipIn")
+        .addClass("flipOut")
         .one(whichAnimationEvent(), () => {
             $("#input-row").hide();
             $("#container-row").removeClass("hidden");
         });
-    toggleFlip(inputCard);
 }

@@ -29,7 +29,7 @@ def get_user():
 
 @app.route("/api/mutual_friends")
 def get_mutual_friends():
-    user_id = request.args.get("userId")
+    user_id = int(request.args.get("userId"))
     
     friends = vk.get_friends(user_id)
     
@@ -45,13 +45,13 @@ def get_mutual_friends():
 
 @app.route("/api/friends_chain")
 def get_friends_chain():
-    user1_id = request.args.get("user1Id")
-    user2_id = request.args.get("user2Id")
+    user1_id = int(request.args.get("user1Id"))
+    user2_id = int(request.args.get("user2Id"))
     chain_length = int(request.args.get("chainLength"))
     
     chain = friends_chain.get_chain(user1_id, user2_id, chain_length)
     
-    if chain:
+    if chain is not None:
         response = Response(Status.OK,
                             [prepare_user(vk.get_user(user)) for user in
                              chain])

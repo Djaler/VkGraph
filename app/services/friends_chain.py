@@ -28,9 +28,15 @@ def _find_common_friend(root_id: int, tree: Tree, max_depth: SupportsInt):
                          parents: List[int]):
         friends = vk.get_friends_ids(prev_level)
         for user, his_friends in zip(prev_level, friends):
-            for friend in his_friends:
-                if tree.is_id_exists(friend):
-                    return friend, parents + [user]
+            commond_friends = [tree.get_by_id(friend) for friend in his_friends
+                               if tree.is_id_exists(friend)]
+    
+            if commond_friends:
+                commond_friends.sort(key=lambda node: len(node.parents))
+                nearest = commond_friends[0]
+        
+                return (*nearest.parents[1:], nearest.id,
+                        *reversed(parents[1:]))
         
         for user, his_friends in zip(prev_level, friends):
             if depth != max_depth:
@@ -45,17 +51,16 @@ def _find_common_friend(root_id: int, tree: Tree, max_depth: SupportsInt):
 
 
 def get_chain(user1: int, user2: int, max_length: int):
-    # TODO распознавание прямой связи и связи через 1 человека
+    if user2 in vk.get_friends_ids([user1])[0]:
+        return []
+    
     depth = (max_length + 1) / 2
     
     tree = _build_tree(user1, max_depth=ceil(depth))
     
-    result = _find_common_friend(user2, tree, max_depth=floor(depth))
+    chain = _find_common_friend(user2, tree, max_depth=floor(depth))
     
-    if not result:
+    if not chain:
         return None
     
-    friend, parents = result
-    
-    return (
-        *tree.get_by_id(friend).parents[1:], friend, *reversed(parents[1:]))
+    return chain
