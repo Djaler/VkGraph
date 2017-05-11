@@ -30,13 +30,18 @@ def _find_common_friend(root_id: int, tree: Tree, max_depth: SupportsInt):
         for user, his_friends in zip(prev_level, friends):
             commond_friends = [tree.get_by_id(friend) for friend in his_friends
                                if tree.is_id_exists(friend)]
-    
+
             if commond_friends:
                 commond_friends.sort(key=lambda node: len(node.parents))
                 nearest = commond_friends[0]
-        
-                return (*nearest.parents[1:], nearest.id,
-                        *reversed(parents[1:]))
+
+                chain = nearest.parents[1:]
+                chain.append(nearest.id)
+                if depth > 2:
+                    chain.append(user)
+                chain.extend(reversed(parents[1:]))
+
+                return chain
         
         for user, his_friends in zip(prev_level, friends):
             if depth != max_depth:
@@ -59,8 +64,5 @@ def get_chain(user1: int, user2: int, max_length: int):
     tree = _build_tree(user1, max_depth=ceil(depth))
     
     chain = _find_common_friend(user2, tree, max_depth=floor(depth))
-    
-    if not chain:
-        return None
-    
-    return chain
+
+    return chain if chain else None
