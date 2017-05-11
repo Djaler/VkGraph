@@ -35,8 +35,11 @@ main .container .row {
 
 .chain-container {
     display: flex;
-    flex-direction: row;
-    justify-content: space-around
+    flex-flow: row wrap;
+    justify-content: center;
+    position: inherit;
+    overflow-y: auto;
+    height: 100%;
 }
 
 .material-icons {
