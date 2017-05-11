@@ -17,12 +17,12 @@ main .container .row {
     margin: 0;
 }
 
-.full-height {
-    height: 100%;
+.navbar-fixed {
+    z-index: 999;
 }
 
-.full-width {
-    width: 100%;
+.full-height {
+    height: 100%;
 }
 
 .no-padding {

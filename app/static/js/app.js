@@ -11,19 +11,6 @@ function promiseGet(url, data) {
     });
 }
 
-function promisePost(url, data) {
-    return new Promise((resolve, reject) => {
-        $.post({
-            url,
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            data
-        })
-            .done((response) => (response.status === "OK") ? resolve(response.data) : reject(response.data))
-            .fail(() => reject());
-    });
-}
-
 function openModal(title, text) {
     $("#modal-title").text(title);
     $("#modal-text").text(text);
@@ -45,11 +32,18 @@ function catchError(message) {
     openModal("Ошибка", text);
 }
 
+function toggleFlip(element) {
+    element.toggleClass("flipIn");
+    element.toggleClass("flipOut");
+}
+
+const inputCard = $("#input-card");
+
 function showCard() {
     $("#input-row").show();
     $("#container-row").addClass("hidden");
 
-    $("#input-card").toggleClass("flipIn");
+    toggleFlip(inputCard);
 }
 
 function whichAnimationEvent() {
@@ -70,10 +64,10 @@ function whichAnimationEvent() {
 }
 
 function hideCard() {
-    $("#input-card")
-        .toggleClass("flipIn")
+    inputCard
         .one(whichAnimationEvent(), () => {
             $("#input-row").hide();
             $("#container-row").removeClass("hidden");
         });
+    toggleFlip(inputCard);
 }

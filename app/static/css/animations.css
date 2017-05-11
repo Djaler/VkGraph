@@ -1,4 +1,4 @@
-.card-panel {
+.animated {
     -webkit-animation-duration: 1s;
     -webkit-animation-fill-mode: both;
     animation-duration: 1s;
@@ -6,14 +6,16 @@
 
     -webkit-backface-visibility: visible !important;
     backface-visibility: visible !important;
-
-    -webkit-animation-name: flipOut;
-    animation-name: flipOut;
 }
 
-.card-panel.flipIn {
+.flipIn {
     -webkit-animation-name: flipIn;
     animation-name: flipIn;
+}
+
+.flipOut {
+    -webkit-animation-name: flipOut;
+    animation-name: flipOut;
 }
 
 @-webkit-keyframes flipIn {
