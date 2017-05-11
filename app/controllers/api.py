@@ -16,13 +16,16 @@ def get_user():
         if vk.get_friends_count(user.id) > 0:
             response = Response(Status.OK, prepare_user(user))
         else:
-            response = Response(Status.ERROR, "У пользователя отсутствуют "
-                                              "или скрыты друзья")
+            response = Response(Status.ERROR,
+                                "У пользователя с id {} отсутствуют или "
+                                "скрыты друзья".format(user_id))
     except vk.NoUserException:
-        response = Response(Status.ERROR, "Пользователя с таким ID не "
-                                          "существует")
+        response = Response(Status.ERROR, "Пользователя с id {} не "
+                                          "существует".format(user_id))
     except vk.UserDeactivatedException:
-        response = Response(Status.ERROR, "Пользователь деактивирован")
+        response = Response(Status.ERROR,
+                            "Пользователь с id {} деактивирован".format(
+                                user_id))
     
     return jsonify(response)
 

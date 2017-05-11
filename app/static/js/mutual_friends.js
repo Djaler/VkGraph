@@ -56,6 +56,10 @@ $(document).ready(() => {
                         }
 
                         drawGraph(nodes, edges);
+                    })
+                    .catch((message) => {
+                        catchError(message);
+                        scanButton.prop("disabled", false);
                     });
             })
             .catch((message) => {

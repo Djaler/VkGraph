@@ -43,29 +43,28 @@ $(document).ready(() => {
     scanButton.click(() => {
         scanButton.prop("disabled", true);
 
-        //TODO Проверка обоих пользователей одновременно
-        getUser(userId1Input.val())
-            .then((user1) => {
-                getUser(userId2Input.val())
-                    .then((user2) => {
-                        if (user1.id === user2.id) {
-                            catchError("Введенные пользователи имеют одинаковый Id");
+        Promise.all([getUser(userId1Input.val()), getUser(userId2Input.val())])
+            .then((users) => {
+                const [user1, user2] = users;
+
+                if (user1.id === user2.id) {
+                    catchError("Введенные пользователи имеют одинаковый Id");
+                    scanButton.prop("disabled", false);
+                    return;
+                }
+
+                hideCard();
+
+                getFriendsChain(user1, user2, 5)
+                    .then((response) => {
+                        if (response === null) {
+                            catchError("Не удалось найти цепочку");
+                            showCard();
+                            scanButton.prop("disabled", false);
                             return;
                         }
-
-                        hideCard();
-
-                        getFriendsChain(user1, user2, 5)
-                            .then((response) => {
-                                if (response === null) {
-                                    catchError("Не удалось найти цепочку");
-                                    showCard();
-                                    scanButton.prop("disabled", false);
-                                    return;
-                                }
-                                $("#preloader").hide();
-                                displayChain([user1].concat(response).concat([user2]));
-                            });
+                        $("#preloader").hide();
+                        displayChain([user1].concat(response).concat([user2]));
                     })
                     .catch((message) => {
                         catchError(message);
