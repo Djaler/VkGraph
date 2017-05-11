@@ -1,8 +1,8 @@
 class Node:
-    def __init__(self, id, parents=None):
+    def __init__(self, user_id, parents=None):
         if parents is None:
             parents = []
-        self._id = id
+        self._id = user_id
         self._parents = parents
     
     @property
@@ -22,12 +22,12 @@ class Tree:
     def add(self, node: Node):
         self._indexes.append(node.id)
         self._nodes.append(node)
-    
-    def get_by_id(self, id: int) -> Node:
-        return self._nodes[self._indexes.index(id)]
-    
-    def is_id_exists(self, id):
-        return id in self._indexes
+
+    def get_by_id(self, user_id: int) -> Node:
+        return self._nodes[self._indexes.index(user_id)]
+
+    def is_id_exists(self, user_id):
+        return user_id in self._indexes
     
     @property
     def nodes(self):

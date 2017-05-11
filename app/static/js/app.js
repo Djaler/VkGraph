@@ -32,7 +32,7 @@ function openModal(title, text) {
 }
 
 function getUser(userId) {
-    return promiseGet("api/user", {user_id: userId});
+    return promiseGet("api/user", {userId});
 }
 
 function catchError(message) {

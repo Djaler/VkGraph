@@ -9,7 +9,7 @@ from ..services.preparation import (prepare_friends_connections, prepare_user,
 
 @app.route("/api/user")
 def get_user():
-    user_id = request.args.get("user_id")
+    user_id = request.args.get("userId")
     
     try:
         user = vk.get_user(user_id)
@@ -29,7 +29,7 @@ def get_user():
 
 @app.route("/api/mutual_friends")
 def get_mutual_friends():
-    user_id = request.args.get("user_id")
+    user_id = request.args.get("userId")
     
     friends = vk.get_friends(user_id)
     

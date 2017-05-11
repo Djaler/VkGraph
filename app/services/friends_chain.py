@@ -45,6 +45,7 @@ def _find_common_friend(root_id: int, tree: Tree, max_depth: SupportsInt):
 
 
 def get_chain(user1: int, user2: int, max_length: int):
+    # TODO распознавание прямой связи и связи через 1 человека
     depth = (max_length + 1) / 2
     
     tree = _build_tree(user1, max_depth=ceil(depth))

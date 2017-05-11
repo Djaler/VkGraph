@@ -1,4 +1,4 @@
-function drawGraph(userId, nodes, edges) {
+function drawGraph(nodes, edges) {
     d3plus.viz()
         .type("network")
         .format({
@@ -17,7 +17,6 @@ function drawGraph(userId, nodes, edges) {
         .resize(true)
         .data(nodes)
         .edges(edges)
-        .focus(userId)
         .id("id")
         .text("name")
         .icon("photo")
@@ -27,7 +26,7 @@ function drawGraph(userId, nodes, edges) {
 }
 
 function getMutualFriends(user) {
-    return promiseGet("api/mutual_friends", {user_id: user.id});
+    return promiseGet("api/mutual_friends", {userId: user.id});
 }
 
 $(document).ready(() => {
@@ -56,7 +55,7 @@ $(document).ready(() => {
                             });
                         }
 
-                        drawGraph(user.id, nodes, edges);
+                        drawGraph(nodes, edges);
                     });
             })
             .catch((message) => {

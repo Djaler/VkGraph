@@ -1,7 +1,7 @@
 const chainContainer = $(".chain-container");
 
 function getFriendsChain(user1, user2, chainLength) {
-    return promiseGet("api/friends_chain", {user1Id: user1.id, user2Id: user2.id, chainLength: chainLength});
+    return promiseGet("api/friends_chain", {user1Id: user1.id, user2Id: user2.id, chainLength});
 }
 
 function displayChain(users) {
@@ -61,10 +61,9 @@ $(document).ready(() => {
                                     showCard();
                                     return;
                                 }
-                                console.log(response);
                                 $("#preloader").hide();
-                                displayChain([user1].concat(response).concat([user2]))
-                            })
+                                displayChain([user1].concat(response).concat([user2]));
+                            });
                     })
                     .catch((message) => {
                         catchError(message);
