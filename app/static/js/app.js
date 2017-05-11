@@ -45,12 +45,11 @@ function catchError(message) {
     openModal("Ошибка", text);
 }
 
-//TODO возможность возврата к панели ввода ID
 function showCard() {
     $("#input-row").show();
     $("#container-row").addClass("hidden");
 
-    $(".card-panel").toggleClass("flipIn");
+    $("#input-card").toggleClass("flipIn");
 }
 
 function whichAnimationEvent() {
@@ -71,7 +70,7 @@ function whichAnimationEvent() {
 }
 
 function hideCard() {
-    $(".card-panel")
+    $("#input-card")
         .toggleClass("flipIn")
         .one(whichAnimationEvent(), () => {
             $("#input-row").hide();

@@ -25,3 +25,7 @@ class User:
     @property
     def photo(self):
         return self._photo
+
+    @property
+    def link(self):
+        return "https://vk.com/id{}".format(self._id)

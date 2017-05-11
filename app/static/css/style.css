@@ -21,10 +21,20 @@ main .container .row {
     height: 100%;
 }
 
+.full-width {
+    width: 100%;
+}
+
 .no-padding {
     padding: 0;
 }
 
 .hidden {
     display: none;
+}
+
+.chain-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around
 }

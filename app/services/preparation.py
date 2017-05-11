@@ -4,7 +4,7 @@ from ..model import User
 
 
 def prepare_user(user: User) -> Dict:
-    return dict(id=user.id, name=user.name, photo=user.photo)
+    return dict(id=user.id, name=user.name, photo=user.photo, link=user.link)
 
 
 def prepare_users(users: Iterable[User]) -> List[Dict]:

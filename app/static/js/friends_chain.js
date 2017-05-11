@@ -1,5 +1,26 @@
+const chainContainer = $(".chain-container");
+
 function getFriendsChain(user1, user2, chainLength) {
     return promiseGet("api/friends_chain", {user1Id: user1.id, user2Id: user2.id, chainLength: chainLength});
+}
+
+function displayChain(users) {
+    const elementTemplate = $("#chain-element-template").html();
+    const arrow = $($("#chain-arrow-template").html());
+
+    for (let i = 0; i < users.length; i++) {
+        const user = users[i];
+
+        const node = $(elementTemplate);
+        node.find(".chain-element-image").attr("src", user.photo);
+        node.find(".chain-element-link").attr("href", user.link);
+        node.find(".chain-element-link").text(user.name);
+        chainContainer.append(node);
+
+        if (i < users.length - 1) {
+            chainContainer.append(arrow.clone());
+        }
+    }
 }
 
 $(document).ready(() => {
@@ -41,6 +62,8 @@ $(document).ready(() => {
                                     return;
                                 }
                                 console.log(response);
+                                $("#preloader").hide();
+                                displayChain([user1].concat(response).concat([user2]))
                             })
                     })
                     .catch((message) => {

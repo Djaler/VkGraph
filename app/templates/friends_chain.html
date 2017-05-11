@@ -9,7 +9,7 @@
     <div class="container">
         <div class="row full-height valign-wrapper" id="input-row">
             <div class="col m12 l8 offset-l2">
-                <div class="card-panel flipIn">
+                <div class="card-panel flipIn" id="input-card">
                     <div class="row">
                         <div class="col s12 m6">
                             <div class="input-field">
@@ -35,7 +35,7 @@
             </div>
         </div>
         <div class="row hidden" id="container-row">
-            <div class="col s12 full-height valign-wrapper no-padding" id="container">
+            <div class="col s12 full-height valign-wrapper no-padding chain-container">
                 <div id="preloader" class="center-block">
                     {% include "preloader.html" %}
                 </div>
@@ -46,5 +46,22 @@
 
 {% block scripts %}
     {{ super() }}
+    <script id="chain-element-template" type="text/template">
+        <div class="card-panel flipIn">
+            <div class="row">
+                <div class="col s12">
+                    <img class="circle center-block chain-element-image" width="64" height="64">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col s12 ">
+                    <a class="grey-text chain-element-link"></a>
+                </div>
+            </div>
+        </div>
+    </script>
+    <script id="chain-arrow-template" type="text/template">
+        <i class="material-icons large flipIn">arrow_forward</i>#}
+    </script>
     <script src="{{ url_for('static', filename='js/friends_chain.js') }}"></script>
 {% endblock %}

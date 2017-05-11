@@ -56,7 +56,7 @@ $(document).ready(() => {
                             });
                         }
 
-                        return drawGraph(user.id, nodes, edges);
+                        drawGraph(user.id, nodes, edges);
                     });
             })
             .catch((message) => {
