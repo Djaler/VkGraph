@@ -38,3 +38,10 @@ main .container .row {
     flex-direction: row;
     justify-content: space-around
 }
+
+.material-icons {
+    -moz-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-select: none;
+    user-select: none;
+}
