@@ -29,13 +29,16 @@ function getMutualFriends(user) {
     return promiseGet("api/mutual_friends", {userId: user.id});
 }
 
-$(document).ready(() => {
-    const userIdInput = $("#userId");
-    const scanButton = $("#scan");
+const scanButton = $("#scan");
+const userIdInput = $("#userId");
 
-    userIdInput.on("change propertychange keydown keyup cut paste click input", () => {
-        scanButton.prop("disabled", userIdInput.val() === "");
-    });
+function checkInputField() {
+    scanButton.prop("disabled", userIdInput.val() === "");
+}
+
+$(document).ready(() => {
+    checkInputField();
+    userIdInput.on("change propertychange keydown keyup cut paste click input", checkInputField);
 
     scanButton.click(() => {
         scanButton.prop("disabled", true);

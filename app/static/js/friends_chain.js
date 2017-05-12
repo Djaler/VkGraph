@@ -23,22 +23,25 @@ function displayChain(users) {
     }
 }
 
+const userId1Input = $("#userId1");
+const userId2Input = $("#userId2");
+const scanButton = $("#scan");
+
+function checkInputField() {
+    let disabled = false;
+
+    if (userId1Input.val() === "" || userId2Input.val() === "") {
+        disabled = true;
+    } else if (userId1Input.val() === userId2Input.val()) {
+        disabled = true;
+    }
+
+    scanButton.prop("disabled", disabled);
+}
+
 $(document).ready(() => {
-    const userId1Input = $("#userId1");
-    const userId2Input = $("#userId2");
-    const scanButton = $("#scan");
-
-    userId1Input.add(userId2Input).on("change propertychange keydown keyup cut paste click input", () => {
-        let disabled = false;
-
-        if (userId1Input.val() === "" || userId2Input.val() === "") {
-            disabled = true;
-        } else if (userId1Input.val() === userId2Input.val()) {
-            disabled = true;
-        }
-
-        scanButton.prop("disabled", disabled);
-    });
+    checkInputField();
+    userId1Input.add(userId2Input).on("change propertychange keydown keyup cut paste click input", checkInputField);
 
     scanButton.click(() => {
         scanButton.prop("disabled", true);
