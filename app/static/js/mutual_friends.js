@@ -20,9 +20,7 @@ function drawGraph(nodes, edges) {
         .id("id")
         .text("name")
         .icon("photo")
-        .draw(() => $("#preloader").hide())
-        .draw(() => {
-        });
+        .draw();
 }
 
 function getMutualFriends(user) {
@@ -58,6 +56,10 @@ $(document).ready(() => {
                             });
                         }
 
+                        inputRow.hide();
+                        containerRow.show();
+
+                        preloader.hide();
                         drawGraph(nodes, edges);
                     })
                     .catch((message) => {

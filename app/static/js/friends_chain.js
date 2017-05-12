@@ -66,7 +66,7 @@ $(document).ready(() => {
                             scanButton.prop("disabled", false);
                             return;
                         }
-                        $("#preloader").hide();
+                        preloader.hide();
                         displayChain([user1].concat(response).concat([user2]));
                     })
                     .catch((message) => {

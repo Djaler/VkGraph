@@ -33,10 +33,13 @@ function catchError(message) {
 }
 
 const inputCard = $("#input-card");
+const inputRow = $("#input-row");
+const containerRow = $("#container-row");
+const preloader = $("#preloader");
 
 function showCard() {
-    $("#input-row").show();
-    $("#container-row").addClass("hidden");
+    inputRow.show();
+    containerRow.hide();
 
     inputCard
         .addClass("flipIn")
@@ -65,7 +68,7 @@ function hideCard() {
         .removeClass("flipIn")
         .addClass("flipOut")
         .one(whichAnimationEvent(), () => {
-            $("#input-row").hide();
-            $("#container-row").removeClass("hidden");
+            inputRow.hide();
+            containerRow.show();
         });
 }
