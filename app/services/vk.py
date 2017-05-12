@@ -3,7 +3,7 @@ from typing import Dict, List, SupportsInt
 
 import vk_api
 
-from .. import cache
+from .. import app, cache
 from ..model import User
 from ..utils import chunks
 
@@ -17,8 +17,10 @@ _authorized_session = vk_api.VkApi(token=token)
 _authorized_session.authorization()
 _authorized_api = _authorized_session.get_api()
 
+_cache_timeout = app.config.get("CACHE_TIMEOUT")
 
-@cache.memoize(timeout=5 * 60)
+
+@cache.memoize(timeout=_cache_timeout)
 def get_user(user_id) -> User:
     try:
         response = _incognito_api.users.get(user_ids=user_id,
@@ -33,14 +35,14 @@ def get_user(user_id) -> User:
         return User.from_vk_json(response[0])
 
 
-@cache.memoize(timeout=5 * 60)
+@cache.memoize(timeout=_cache_timeout)
 def get_friends_count(user_id: int) -> int:
     response = _incognito_api.friends.get(user_id=user_id)
     
     return response['count']
 
 
-@cache.memoize(timeout=5 * 60)
+@cache.memoize(timeout=_cache_timeout)
 def get_friends(user_id: int) -> List[User]:
     response = _incognito_api.friends.get(user_id=user_id,
                                           fields=_default_user_fields,
@@ -49,7 +51,7 @@ def get_friends(user_id: int) -> List[User]:
     return list(map(User.from_vk_json, response['items']))
 
 
-@cache.memoize(timeout=5 * 60)
+@cache.memoize(timeout=_cache_timeout)
 def get_friends_ids(users_ids: List[SupportsInt]) -> List[List[int]]:
     user_ids_str = list(map(str, users_ids))
     
@@ -61,11 +63,9 @@ def get_friends_ids(users_ids: List[SupportsInt]) -> List[List[int]]:
     return result
 
 
-@cache.memoize(timeout=5 * 60)
-def get_mutual_friends_ids(users: List[User],
+@cache.memoize(timeout=_cache_timeout)
+def get_mutual_friends_ids(users_ids: List[SupportsInt],
                            my_id: int) -> Dict[int, List[int]]:
-    users_ids = [user.id for user in users]
-
     with vk_api.VkRequestsPool(_authorized_session) as pool:
         response = pool.method_one_param(
             'friends.getMutual',

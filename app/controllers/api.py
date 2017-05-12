@@ -35,8 +35,9 @@ def get_mutual_friends():
     user_id = int(request.args.get("userId"))
     
     friends = vk.get_friends(user_id)
-    
-    mutual_friends = vk.get_mutual_friends_ids(friends, user_id)
+
+    mutual_friends = vk.get_mutual_friends_ids([user.id for user in friends],
+                                               user_id)
     
     response = Response(Status.OK,
                         dict(friends=prepare_users(friends),
