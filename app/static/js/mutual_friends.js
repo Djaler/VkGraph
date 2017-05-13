@@ -56,14 +56,14 @@ $(document).ready(() => {
                             });
                         }
 
-                        inputRow.hide();
-                        containerRow.show();
+                        showContainerRow();
 
                         preloader.hide();
                         drawGraph(nodes, edges);
                     })
                     .catch((message) => {
                         catchError(message);
+                        showCard();
                         scanButton.prop("disabled", false);
                     });
             })

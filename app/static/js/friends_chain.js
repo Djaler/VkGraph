@@ -66,11 +66,13 @@ $(document).ready(() => {
                             scanButton.prop("disabled", false);
                             return;
                         }
+
                         preloader.hide();
                         displayChain([user1].concat(response).concat([user2]));
                     })
                     .catch((message) => {
                         catchError(message);
+                        showCard();
                         scanButton.prop("disabled", false);
                     });
             })

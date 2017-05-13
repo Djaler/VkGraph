@@ -37,9 +37,18 @@ const inputRow = $("#input-row");
 const containerRow = $("#container-row");
 const preloader = $("#preloader");
 
-function showCard() {
+function showContainerRow() {
+    inputRow.hide();
+    containerRow.show();
+}
+
+function hideContainerRow() {
     inputRow.show();
     containerRow.hide();
+}
+
+function showCard() {
+    hideContainerRow();
 
     inputCard
         .addClass("flipIn")
@@ -68,7 +77,6 @@ function hideCard() {
         .removeClass("flipIn")
         .addClass("flipOut")
         .one(whichAnimationEvent(), () => {
-            inputRow.hide();
-            containerRow.show();
+            showContainerRow();
         });
 }

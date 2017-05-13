@@ -7,8 +7,6 @@ from .. import app, cache
 from ..model import User
 from ..utils import chunks
 
-_default_user_fields = ['id', 'first_name', 'last_name', 'photo_200_orig']
-
 token = os.environ.get("ACCESS_TOKEN")
 
 _incognito_api = vk_api.VkApi().get_api()
@@ -18,6 +16,7 @@ _authorized_session.authorization()
 _authorized_api = _authorized_session.get_api()
 
 _cache_timeout = app.config.get("CACHE_TIMEOUT")
+_default_user_fields = ['id', 'first_name', 'last_name', 'photo_200_orig']
 
 
 @cache.memoize(timeout=_cache_timeout)
