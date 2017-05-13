@@ -28,19 +28,19 @@ def _find_common_friend(root_id: int, tree: Tree, max_depth: SupportsInt):
                          parents: List[int]):
         friends = vk.get_friends_ids(prev_level)
         for user, his_friends in zip(prev_level, friends):
-            commond_friends = [tree.get_by_id(friend) for friend in his_friends
-                               if tree.is_id_exists(friend)]
-
-            if commond_friends:
-                commond_friends.sort(key=lambda node: len(node.parents))
-                nearest = commond_friends[0]
-
+            common_friends = [tree.get_by_id(friend) for friend in his_friends
+                              if tree.is_id_exists(friend)]
+    
+            if common_friends:
+                common_friends.sort(key=lambda node: len(node.parents))
+                nearest = common_friends[0]
+                
                 chain = nearest.parents[1:]
                 chain.append(nearest.id)
                 if depth > 2:
                     chain.append(user)
                 chain.extend(reversed(parents[1:]))
-
+        
                 return chain
         
         for user, his_friends in zip(prev_level, friends):
