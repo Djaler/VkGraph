@@ -1,5 +1,5 @@
 import os
-from typing import Dict, List
+from typing import Dict, Iterable, List
 
 import vk_api
 from celery import group
@@ -20,32 +20,6 @@ _cache_timeout = app.config.get("CACHE_TIMEOUT")
 _default_user_fields = ['id', 'first_name', 'last_name', 'photo_100']
 
 
-@celery.task()
-def get_friends_ids_task(user_ids: List[int]) -> List[List[int]]:
-    user_ids_str = list(map(str, user_ids))
-    
-    result = []
-    for chunk in chunks(user_ids_str, 25):
-        response = _authorized_api.execute.friends(targets=",".join(chunk))
-        result.extend(response)
-    
-    return result
-
-
-@celery.task()
-def get_mutual_friends_ids_task(user_ids: List[int],
-                                my_id: int) -> Dict[int, List[int]]:
-    with vk_api.VkRequestsPool(_authorized_session) as pool:
-        response = pool.method_one_param(
-            'friends.getMutual',
-            key='target_uid',
-            values=user_ids,
-            default_values={'source_uid': my_id}
-        )
-    
-    return response.result
-
-
 @cache.memoize(timeout=_cache_timeout)
 def get_user(user_id) -> User:
     try:
@@ -62,7 +36,7 @@ def get_user(user_id) -> User:
 
 
 @cache.memoize(timeout=_cache_timeout)
-def get_users(user_ids: List[int]) -> List[User]:
+def get_users(user_ids: Iterable[int]) -> List[User]:
     user_ids_str = list(map(str, user_ids))
     response = _authorized_api.users.get(user_ids=",".join(user_ids_str),
                                          fields=_default_user_fields,
@@ -89,31 +63,57 @@ def get_friends(user_id: int) -> List[User]:
 
 @cache.memoize(timeout=_cache_timeout)
 def get_friends_ids(user_ids: List[int]) -> List[List[int]]:
-    job = group([get_friends_ids_task.s(chunk) for chunk in
+    job = group([_get_friends_ids_task.s(chunk) for chunk in
                  chunks(user_ids, 75)])
-
+    
     result = job.apply_async().join()
-
+    
     full_result = []
-
+    
     for list_ in result:
         full_result.extend(list_)
-
+    
     return full_result
+
+
+@celery.task()
+def _get_friends_ids_task(user_ids: Iterable[int]) -> List[List[int]]:
+    user_ids_str = list(map(str, user_ids))
+    
+    result = []
+    for chunk in chunks(user_ids_str, 25):
+        response = _authorized_api.execute.friends(targets=",".join(chunk))
+        result.extend(response)
+    
+    return result
 
 
 @cache.memoize(timeout=_cache_timeout)
 def get_mutual_friends_ids(user_ids: List[int],
                            my_id: int) -> Dict[int, List[int]]:
-    job = group([get_mutual_friends_ids_task.s(chunk, my_id) for chunk in
+    job = group([_get_mutual_friends_ids_task.s(chunk, my_id) for chunk in
                  chunks(user_ids, 75)])
     
     result = job.apply_async().join()
-
+    
     full_result = {int(key): value for dictionary in result for key, value in
                    dictionary.items()}
-
+    
     return full_result
+
+
+@celery.task()
+def _get_mutual_friends_ids_task(user_ids: List[int],
+                                 my_id: int) -> Dict[int, List[int]]:
+    with vk_api.VkRequestsPool(_authorized_session) as pool:
+        response = pool.method_one_param(
+            'friends.getMutual',
+            key='target_uid',
+            values=user_ids,
+            default_values={'source_uid': my_id}
+        )
+    
+    return response.result
 
 
 class NoUserException(Exception):
