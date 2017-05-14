@@ -8,7 +8,7 @@ class User:
     def from_vk_json(json):
         return User(json['id'],
                     "{} {}".format(json['first_name'], json['last_name']),
-                    json['photo_200_orig'])
+                    json['photo_100'])
     
     @staticmethod
     def from_json(json):

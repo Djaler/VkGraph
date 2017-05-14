@@ -1,5 +1,7 @@
 flask
 Flask-Caching
+celery
+redis
 vk-api
 python-dotenv
 gunicorn

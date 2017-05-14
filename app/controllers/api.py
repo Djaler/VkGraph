@@ -56,9 +56,7 @@ def get_friends_chain():
     chain = friends_chain.get_chain(user1_id, user2_id, chain_length)
     
     if chain is not None:
-        response = Response(Status.OK,
-                            [prepare_user(vk.get_user(user)) for user in
-                             chain])
+        response = Response(Status.OK, prepare_users(vk.get_users(chain)))
     else:
         response = Response(Status.OK, None)
     
