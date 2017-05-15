@@ -71,7 +71,10 @@ def get_chain(user1: int, user2: int, max_length: int):
     
     chain = _find_common_friend(user2, tree, max_depth=floor(depth))
 
+    if not chain:
+        return None
+    
     if user2_friends_count < user1_friends_count:
         chain = list(reversed(chain))
-    
-    return chain if chain else None
+
+    return chain
