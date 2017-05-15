@@ -1,5 +1,5 @@
 import os
-from typing import Dict, Iterable, List
+from typing import Dict, Iterable, List, Optional
 
 import vk_api
 from celery import group
@@ -22,31 +22,51 @@ _default_user_fields = ['id', 'first_name', 'last_name', 'photo_100']
 
 @cache.memoize(timeout=_cache_timeout)
 def get_user(user_id) -> User:
+    user = _get_user_task.delay(user_id).get()
+    if user is None:
+        raise NoUserException
+    elif 'deactivated' in user:
+        raise UserDeactivatedException
+    else:
+        return User.from_vk_json(user)
+
+
+@celery.task()
+def _get_user_task(user_id) -> Optional[dict]:
     try:
         response = _authorized_api.users.get(user_ids=user_id,
                                              fields=_default_user_fields,
                                              lang="ru")
     except vk_api.ApiError:
-        raise NoUserException
+        return None
     else:
-        if 'deactivated' in response[0]:
-            raise UserDeactivatedException
-
-        return User.from_vk_json(response[0])
+        return response[0]
 
 
 @cache.memoize(timeout=_cache_timeout)
 def get_users(user_ids: Iterable[int]) -> List[User]:
+    users = _get_users_task.delay(user_ids).get()
+    
+    return list(map(User.from_vk_json, users))
+
+
+@celery.task()
+def _get_users_task(user_ids: Iterable[int]) -> List[dict]:
     user_ids_str = list(map(str, user_ids))
     response = _authorized_api.users.get(user_ids=",".join(user_ids_str),
                                          fields=_default_user_fields,
                                          lang="ru")
-    
-    return list(map(User.from_vk_json, response))
+
+    return response
 
 
 @cache.memoize(timeout=_cache_timeout)
 def get_friends_count(user_id: int) -> int:
+    return _get_friends_count_task.delay(user_id).get()
+
+
+@celery.task()
+def _get_friends_count_task(user_id: int) -> int:
     response = _incognito_api.friends.get(user_id=user_id)
     
     return response['count']
@@ -54,11 +74,17 @@ def get_friends_count(user_id: int) -> int:
 
 @cache.memoize(timeout=_cache_timeout)
 def get_friends(user_id: int) -> List[User]:
+    friends = _get_friends_task.delay(user_id).get()
+    return list(map(User.from_vk_json, friends))
+
+
+@celery.task()
+def _get_friends_task(user_id: int) -> List[dict]:
     response = _authorized_api.friends.get(user_id=user_id,
                                            fields=_default_user_fields,
                                            lang="ru")
-    
-    return list(map(User.from_vk_json, response['items']))
+
+    return response['items']
 
 
 @cache.memoize(timeout=_cache_timeout)
