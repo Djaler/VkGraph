@@ -1,7 +1,6 @@
 flask
 Flask-Caching
-celery
-redis
+celery[redis]
 vk-api
 python-dotenv
 gunicorn
