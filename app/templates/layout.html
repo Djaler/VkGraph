@@ -13,6 +13,7 @@
         <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/css/materialize.min.css" rel="stylesheet">
 
         <link type=text/css href="{{ url_for('static', filename='css/style.css') }}" rel=stylesheet>
+        <link type=text/css href="{{ url_for('static', filename='css/animations.css') }}" rel=stylesheet>
     {% endblock %}
 </head>
 <body class="grey lighten-3">
@@ -39,6 +40,11 @@
 </header>
 <main>
     {% block main %}{% endblock %}
+    <div class="fixed-action-btn scale-transition scale-out" id="refresh">
+        <a class="btn-floating btn-large red waves-effect waves-light">
+            <i class="large material-icons">refresh</i>
+        </a>
+    </div>
 </main>
 {% include "modal.html" %}
 
@@ -48,7 +54,8 @@
             crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.98.2/js/materialize.min.js"></script>
 
-    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/utils.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/ui.js') }}"></script>
 {% endblock %}
 </body>
 </html>

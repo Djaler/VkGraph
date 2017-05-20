@@ -29,7 +29,6 @@ function getMutualFriends(user) {
     return promiseGet("api/mutual_friends", {userId: user.id});
 }
 
-const scanButton = $("#scan");
 const userIdInput = $("#userId");
 
 function checkInputField() {

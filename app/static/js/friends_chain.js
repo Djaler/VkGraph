@@ -25,7 +25,6 @@ function displayChain(users) {
 
 const userId1Input = $("#userId1");
 const userId2Input = $("#userId2");
-const scanButton = $("#scan");
 
 function checkInputField() {
     let disabled = false;

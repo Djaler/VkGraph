@@ -1,10 +1,5 @@
 {% extends "layout.html" %}
 
-{% block head %}
-    {{ super() }}
-    <link type=text/css href="{{ url_for('static', filename='css/animations.css') }}" rel=stylesheet>
-{% endblock %}
-
 {% block main %}
     <div class="container valign-wrapper">
         <div class="row" id="input-row">
@@ -41,11 +36,6 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="fixed-action-btn scale-transition scale-out" id="refresh">
-        <a class="btn-floating btn-large red waves-effect waves-light">
-            <i class="large material-icons">refresh</i>
-        </a>
     </div>
 {% endblock %}
 
