@@ -39,14 +39,19 @@ $(document).ready(() => {
     userIdInput.on("change propertychange keydown keyup cut paste click input", checkInputField);
 
     scanButton.click(() => {
-        scanButton.prop("disabled", true);
+        disableScanButton();
 
         getUser(userIdInput.val())
             .then((user) => {
                 hideCard();
+                showRefreshButton();
 
                 getMutualFriends(user)
                     .then((response) => {
+                        if (inputVisible) {
+                            return;
+                        }
+
                         const nodes = response.friends.concat(user);
                         const edges = response.friends_connections;
                         for (const friend of response.friends) {
@@ -62,14 +67,17 @@ $(document).ready(() => {
                         drawGraph(nodes, edges);
                     })
                     .catch((message) => {
+                        if (inputVisible) {
+                            return;
+                        }
+
                         catchError(message);
                         showCard();
-                        scanButton.prop("disabled", false);
                     });
             })
             .catch((message) => {
                 catchError(message);
-                scanButton.prop("disabled", false);
+                enableScanButton();
             });
     });
 });

@@ -44,7 +44,7 @@ $(document).ready(() => {
     userId1Input.add(userId2Input).on("change propertychange keydown keyup cut paste click input", checkInputField);
 
     scanButton.click(() => {
-        scanButton.prop("disabled", true);
+        disableScanButton();
 
         Promise.all([getUser(userId1Input.val()), getUser(userId2Input.val())])
             .then((users) => {
@@ -52,18 +52,22 @@ $(document).ready(() => {
 
                 if (user1.id === user2.id) {
                     catchError("Введенные пользователи имеют одинаковый Id");
-                    scanButton.prop("disabled", false);
+                    enableScanButton();
                     return;
                 }
 
                 hideCard();
+                showRefreshButton();
 
                 getFriendsChain(user1, user2, 5)
                     .then((response) => {
+                        if (inputVisible) {
+                            return;
+                        }
+
                         if (response === null) {
                             catchError("Не удалось найти цепочку");
                             showCard();
-                            scanButton.prop("disabled", false);
                             return;
                         }
 
@@ -71,14 +75,17 @@ $(document).ready(() => {
                         displayChain([user1].concat(response).concat([user2]));
                     })
                     .catch((message) => {
+                        if (inputVisible) {
+                            return;
+                        }
+
                         catchError(message);
                         showCard();
-                        scanButton.prop("disabled", false);
                     });
             })
             .catch((message) => {
                 catchError(message);
-                scanButton.prop("disabled", false);
+                enableScanButton();
             });
     });
 });

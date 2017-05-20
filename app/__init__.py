@@ -1,9 +1,6 @@
 from celery import Celery
-from dotenv import find_dotenv, load_dotenv
 from flask import Flask
 from flask_caching import Cache
-
-load_dotenv(find_dotenv())
 
 app = Flask(__name__)
 app.config.from_object('config')

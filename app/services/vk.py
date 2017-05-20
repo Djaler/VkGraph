@@ -13,7 +13,7 @@ token = os.environ.get("ACCESS_TOKEN")
 _incognito_api = vk_api.VkApi().get_api()
 
 _authorized_session = vk_api.VkApi(token=token)
-_authorized_session.authorization()
+_authorized_session.auth()
 _authorized_api = _authorized_session.get_api()
 
 _cache_timeout = app.config.get("CACHE_TIMEOUT")

@@ -1,8 +1,3 @@
-$(document).ready(() => {
-    $(".button-collapse").sideNav();
-    $(".modal").modal();
-});
-
 function promiseGet(url, data) {
     return new Promise((resolve, reject) => {
         $.get(url, data)
@@ -32,29 +27,6 @@ function catchError(message) {
     openModal("Ошибка", text);
 }
 
-const inputCard = $("#input-card");
-const inputRow = $("#input-row");
-const containerRow = $("#container-row");
-const preloader = $("#preloader");
-
-function showContainerRow() {
-    inputRow.hide();
-    containerRow.show();
-}
-
-function hideContainerRow() {
-    inputRow.show();
-    containerRow.hide();
-}
-
-function showCard() {
-    hideContainerRow();
-
-    inputCard
-        .addClass("flipIn")
-        .removeClass("flipOut");
-}
-
 function whichAnimationEvent() {
     const el = document.createElement("fakeelement");
 
@@ -72,11 +44,76 @@ function whichAnimationEvent() {
     }
 }
 
+const animationEvent = whichAnimationEvent();
+
+const inputCard = $("#input-card");
+const inputRow = $("#input-row");
+const preloader = $("#preloader");
+const containerRow = $("#container-row");
+const container = $("#container");
+const refreshButton = $("#refresh");
+
+let inputVisible = true;
+
+function showContainerRow() {
+    inputCard.off(animationEvent);
+
+    inputRow.hide();
+    containerRow.show();
+}
+
+function hideContainerRow() {
+    inputRow.show();
+    containerRow.hide();
+
+    container.children().not('#preloader').remove();
+}
+
+function showCard() {
+    hideContainerRow();
+
+    inputCard
+        .addClass("flipIn")
+        .removeClass("flipOut");
+
+    enableScanButton();
+    hideRefreshButton();
+
+    inputVisible = true;
+}
+
 function hideCard() {
     inputCard
         .removeClass("flipIn")
         .addClass("flipOut")
-        .one(whichAnimationEvent(), () => {
-            showContainerRow();
-        });
+        .on(animationEvent, showContainerRow);
+
+    inputVisible = false;
+
+    preloader.show();
 }
+
+function disableScanButton() {
+    scanButton.prop("disabled", true);
+}
+
+function enableScanButton() {
+    scanButton.prop("disabled", false);
+}
+
+function showRefreshButton() {
+    refreshButton.addClass("scale-in");
+}
+
+function hideRefreshButton() {
+    refreshButton.removeClass("scale-in");
+}
+
+$(document).ready(() => {
+    $(".button-collapse").sideNav();
+    $(".modal").modal();
+
+    refreshButton.click(() => {
+        showCard();
+    });
+});
