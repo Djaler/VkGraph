@@ -3,16 +3,13 @@ class User:
         self._id = user_id
         self._name = name
         self._photo = photo
+        self._color = ""
     
     @staticmethod
     def from_vk_json(json):
         return User(json['id'],
                     "{} {}".format(json['first_name'], json['last_name']),
                     json['photo_100'])
-    
-    @staticmethod
-    def from_json(json):
-        return User(json['id'], json['name'], json['photo'])
     
     @property
     def id(self):
@@ -29,3 +26,11 @@ class User:
     @property
     def link(self):
         return "https://vk.com/id{}".format(self._id)
+
+    @property
+    def color(self):
+        return self._color
+
+    @color.setter
+    def color(self, value):
+        self._color = value

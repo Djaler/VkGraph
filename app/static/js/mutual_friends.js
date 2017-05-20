@@ -15,11 +15,13 @@ function drawGraph(nodes, edges) {
         .background("#eeeeee")
         .width({small: 700})
         .resize(true)
+        .legend(false)
         .data(nodes)
         .edges(edges)
         .id("id")
         .text("name")
         .icon("photo")
+        .color("color")
         .draw();
 }
 
