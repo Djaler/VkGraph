@@ -88,8 +88,20 @@ def _get_friends_task(user_id: int) -> List[dict]:
 
 
 @cache.memoize(timeout=_cache_timeout)
-def get_friends_ids(user_ids: List[int]) -> List[List[int]]:
-    job = group([_get_friends_ids_task.s(chunk) for chunk in
+def get_friends_ids(user_id: int) -> List[int]:
+    return _get_friends_ids_task.delay(user_id).get()
+
+
+@celery.task()
+def _get_friends_ids_task(user_id: int) -> List[int]:
+    response = _authorized_api.friends.get(user_id=user_id)
+    
+    return response['items']
+
+
+@cache.memoize(timeout=_cache_timeout)
+def get_friends_ids_batch(user_ids: List[int]) -> List[List[int]]:
+    job = group([_get_friends_ids_batch_task.s(chunk) for chunk in
                  chunks(user_ids, 75)])
     
     result = job.apply_async().join()
@@ -103,7 +115,7 @@ def get_friends_ids(user_ids: List[int]) -> List[List[int]]:
 
 
 @celery.task()
-def _get_friends_ids_task(user_ids: Iterable[int]) -> List[List[int]]:
+def _get_friends_ids_batch_task(user_ids: Iterable[int]) -> List[List[int]]:
     user_ids_str = list(map(str, user_ids))
     
     result = []
@@ -115,10 +127,22 @@ def _get_friends_ids_task(user_ids: Iterable[int]) -> List[List[int]]:
 
 
 @cache.memoize(timeout=_cache_timeout)
-def get_mutual_friends_ids(user_ids: List[int],
-                           my_id: int) -> Dict[int, List[int]]:
-    job = group([_get_mutual_friends_ids_task.s(chunk, my_id) for chunk in
-                 chunks(user_ids, 75)])
+def get_mutual_friends_ids(user1: int, user2: int) -> List[int]:
+    return _get_mutual_friends_ids_task.delay(user1, user2).get()
+
+
+@celery.task()
+def _get_mutual_friends_ids_task(user1: int, user2: int) -> List[int]:
+    return _authorized_api.friends.getMutual(target_uid=user1,
+                                             source_uid=user2)
+
+
+@cache.memoize(timeout=_cache_timeout)
+def get_mutual_friends_ids_batch(user_ids: List[int],
+                                 my_id: int) -> Dict[int, List[int]]:
+    job = group(
+        [_get_mutual_friends_ids_batch_task.s(chunk, my_id) for chunk in
+         chunks(user_ids, 75)])
     
     result = job.apply_async().join()
     
@@ -129,8 +153,8 @@ def get_mutual_friends_ids(user_ids: List[int],
 
 
 @celery.task()
-def _get_mutual_friends_ids_task(user_ids: List[int],
-                                 my_id: int) -> Dict[int, List[int]]:
+def _get_mutual_friends_ids_batch_task(user_ids: List[int],
+                                       my_id: int) -> Dict[int, List[int]]:
     with vk_api.VkRequestsPool(_authorized_session) as pool:
         response = pool.method_one_param(
             'friends.getMutual',

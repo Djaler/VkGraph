@@ -61,8 +61,8 @@ def get_friends_chain():
     user1_id = int(request.args.get("user1Id"))
     user2_id = int(request.args.get("user2Id"))
     chain_length = int(request.args.get("chainLength"))
-    
-    chain = friends_chain.get_chain(user1_id, user2_id, chain_length)
+
+    chain = friends_chain.find_chain(user1_id, user2_id, chain_length)
     
     if chain is not None:
         users = [dict(name=user.name,
