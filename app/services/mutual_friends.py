@@ -15,8 +15,10 @@ def get_mutual_friends(user_id: int):
     interval = max(connections_counts) - min(connections_counts)
     
     for friend, connections_count in zip(friends, connections_counts):
-        hue = 240 - 240 * connections_count / interval
-        
-        friend.color = rgb_to_hex(*hsv_to_rgb(hue / 360, 1, 1))
+        try:
+            hue = 240 - 240 * connections_count / interval
+            friend.color = rgb_to_hex(*hsv_to_rgb(hue / 360, 1, 1))
+        except ZeroDivisionError:
+            friend.color = rgb_to_hex(1, 0, 0)
     
     return friends, mutual_ids
