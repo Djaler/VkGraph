@@ -10,7 +10,11 @@ def _build_tree(root_id: int, max_depth: SupportsInt) -> Tree:
     tree.add(Node(root_id))
     
     def add_next_level(prev_level: List[int], depth: int, parents: List[int]):
-        friends = vk.get_friends_ids_batch(prev_level)
+        if len(prev_level) == 1:
+            friends = [vk.get_friends_ids(prev_level[0])]
+        else:
+            friends = vk.get_friends_ids_batch(prev_level)
+        
         for user, his_friends in zip(prev_level, friends):
             for friend in his_friends:
                 tree.add(Node(friend, parents + [user]))
@@ -26,7 +30,11 @@ def _build_tree(root_id: int, max_depth: SupportsInt) -> Tree:
 def _find_common_friend(root_id: int, tree: Tree, max_depth: SupportsInt):
     def check_next_level(prev_level: List[int], depth: int,
                          parents: List[int]):
-        friends = vk.get_friends_ids_batch(prev_level)
+        if len(prev_level) == 1:
+            friends = [vk.get_friends_ids(prev_level[0])]
+        else:
+            friends = vk.get_friends_ids_batch(prev_level)
+        
         for user, his_friends in zip(prev_level, friends):
             common_friends = [tree.get_by_id(friend) for friend in his_friends
                               if tree.is_id_exists(friend)]
@@ -56,7 +64,8 @@ def _find_common_friend(root_id: int, tree: Tree, max_depth: SupportsInt):
 
 
 def find_chain(user1: int, user2: int, max_length: int):
-    if user2 in vk.get_friends_ids(user1):
+    user1_friends = vk.get_friends_ids(user1)
+    if user2 in user1_friends:
         return []
     
     mutual_friends = vk.get_mutual_friends_ids(user1, user2)
@@ -65,7 +74,7 @@ def find_chain(user1: int, user2: int, max_length: int):
     
     depth = (max_length + 1) / 2
     
-    user1_friends_count = vk.get_friends_count(user1)
+    user1_friends_count = len(user1_friends)
     user2_friends_count = vk.get_friends_count(user2)
     
     if user2_friends_count < user1_friends_count:
