@@ -1,13 +1,46 @@
 from math import ceil, floor
-from typing import List, SupportsInt
+from typing import List, Optional, SupportsInt
 
 from . import vk
-from ..users_tree import Node, Tree
 
 
-def _build_tree(root_id: int, max_depth: SupportsInt) -> Tree:
-    tree = Tree()
-    tree.add(Node(root_id))
+class _Node:
+    def __init__(self, user_id: int, parents: List[int] = None):
+        if parents is None:
+            parents = []
+        self._id = user_id
+        self._parents = parents
+    
+    @property
+    def id(self) -> int:
+        return self._id
+    
+    @property
+    def parents(self) -> List[int]:
+        return self._parents
+
+
+class _Tree:
+    def __init__(self):
+        self._nodes = {}
+    
+    def add(self, node: _Node):
+        self._nodes[node.id] = node
+    
+    def get_by_id(self, user_id: int) -> _Node:
+        return self._nodes[user_id]
+    
+    def is_id_exists(self, user_id: int):
+        return user_id in self._nodes
+    
+    @property
+    def nodes(self) -> List[_Node]:
+        return list(self._nodes.values())
+
+
+def _build_tree(root_id: int, max_depth: SupportsInt) -> _Tree:
+    tree = _Tree()
+    tree.add(_Node(root_id))
     
     def add_next_level(prev_level: List[int], depth: int, parents: List[int]):
         if len(prev_level) == 1:
@@ -17,7 +50,7 @@ def _build_tree(root_id: int, max_depth: SupportsInt) -> Tree:
         
         for user, his_friends in zip(prev_level, friends):
             for friend in his_friends:
-                tree.add(Node(friend, parents + [user]))
+                tree.add(_Node(friend, parents + [user]))
             
             if depth != max_depth:
                 add_next_level(his_friends, depth + 1, parents + [user])
@@ -27,9 +60,10 @@ def _build_tree(root_id: int, max_depth: SupportsInt) -> Tree:
     return tree
 
 
-def _find_common_friend(root_id: int, tree: Tree, max_depth: SupportsInt):
+def _find_common_friend(root_id: int, tree: _Tree,
+                        max_depth: SupportsInt) -> Optional[List[int]]:
     def check_next_level(prev_level: List[int], depth: int,
-                         parents: List[int]):
+                         parents: List[int]) -> Optional[List[int]]:
         if len(prev_level) == 1:
             friends = [vk.get_friends_ids(prev_level[0])]
         else:
@@ -63,7 +97,8 @@ def _find_common_friend(root_id: int, tree: Tree, max_depth: SupportsInt):
     return check_next_level([root_id], 2, [])
 
 
-def find_chain(user1: int, user2: int, max_length: int):
+def find_chain(user1: int, user2: int,
+               max_length: int = 5) -> Optional[List[int]]:
     user1_friends = vk.get_friends_ids(user1)
     if user2 in user1_friends:
         return []
