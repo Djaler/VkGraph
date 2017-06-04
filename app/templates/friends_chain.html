@@ -31,7 +31,7 @@
         </div>
         <div class="row hidden" id="container-row">
             <div class="col s12 valign-wrapper chain-container" id="container">
-                <div id="preloader" class="center-block">
+                <div id="preloader" class="flex-center-block">
                     {% include "preloader.html" %}
                 </div>
             </div>
@@ -56,7 +56,8 @@
         </div>
     </script>
     <script id="chain-arrow-template" type="text/template">
-        <i class="material-icons medium">arrow_forward</i>
+        <i class="material-icons medium hide-on-small-and-down">arrow_forward</i>
+        <i class="material-icons medium hide-on-med-and-up">arrow_downward</i>
     </script>
     <script src="{{ url_for('static', filename='js/friends_chain.js') }}"></script>
 {% endblock %}

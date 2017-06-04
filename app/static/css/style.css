@@ -35,16 +35,24 @@ main .container .row {
 
 .chain-container {
     display: flex;
-    flex-flow: row wrap;
-    justify-content: center;
+    flex-direction: column;
     position: inherit;
     overflow-y: auto;
     height: 100%;
 }
 
+@media only screen and (min-width: 601px) {
+    .chain-container {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+
+.flex-center-block {
+    margin: auto;
+}
+
 .material-icons {
-    -moz-user-select: none;
-    -ms-user-select: none;
-    -webkit-user-select: none;
     user-select: none;
 }
