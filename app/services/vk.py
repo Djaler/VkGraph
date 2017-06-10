@@ -3,6 +3,7 @@ from typing import Dict, Iterable, List, Optional
 
 import vk_api
 from celery import group
+from vk_api.vk_api import VkApiMethod
 
 from .. import app, cache, celery
 from ..model import User
@@ -17,7 +18,11 @@ _authorized_session.auth()
 _authorized_api = _authorized_session.get_api()
 
 _cache_timeout = app.config.get("CACHE_TIMEOUT")
-_default_user_fields = ['id', 'first_name', 'last_name', 'photo_100']
+_default_user_fields = ['id', 'first_name', 'last_name', 'photo_100', 'domain']
+
+VkApiMethod.__call__ = lambda self, **kwargs: self._vk.method(self._method, {
+    key: ",".join(value) if isinstance(value, list) else value
+    for key, value in kwargs.items()})
 
 
 @cache.memoize(timeout=_cache_timeout)
@@ -53,7 +58,7 @@ def get_users(user_ids: Iterable[int]) -> List[User]:
 @celery.task()
 def _get_users_task(user_ids: Iterable[int]) -> List[dict]:
     user_ids_str = list(map(str, user_ids))
-    response = _authorized_api.users.get(user_ids=",".join(user_ids_str),
+    response = _authorized_api.users.get(user_ids=user_ids_str,
                                          fields=_default_user_fields,
                                          lang="ru")
 
@@ -120,7 +125,7 @@ def _get_friends_ids_batch_task(user_ids: Iterable[int]) -> List[List[int]]:
     
     result = []
     for chunk in chunks(user_ids_str, 25):
-        response = _authorized_api.execute.friends(targets=",".join(chunk))
+        response = _authorized_api.execute.friends(targets=chunk)
         result.extend(response)
     
     return result
