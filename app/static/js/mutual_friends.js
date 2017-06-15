@@ -54,7 +54,7 @@ $(document).ready(() => {
                         }
 
                         const nodes = response.friends.concat(user);
-                        const edges = response.friends_connections;
+                        const edges = response.connections;
                         for (const friend of response.friends) {
                             edges.push({
                                 source: user.id,
