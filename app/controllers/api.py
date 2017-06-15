@@ -2,7 +2,7 @@ from flask import jsonify, request
 
 from .. import app
 from ..model import Chain, Response, Status, UsersGraph
-from ..services import friends_chain, mutual_friends, vk
+from ..services import friends_chain, mutual_friends, temperature_map, vk
 
 
 @app.route("/api/user")
@@ -34,7 +34,18 @@ def get_mutual_friends():
 
     friends, mutual_ids = mutual_friends.get_mutual_friends(user_id)
 
-    response = Response(Status.OK, UsersGraph(friends, mutual_ids).to_json())
+    graph = UsersGraph(friends, mutual_ids)
+
+    connections_counts = [len([connection for connection in graph.connections
+                               if user.id in connection.values()])
+                          for user in friends]
+    interval = max(connections_counts) - min(connections_counts)
+
+    for user, connections_count in zip(graph.users, connections_counts):
+        user.color = temperature_map.calculate_color(connections_count,
+                                                     interval)
+
+    response = Response(Status.OK, graph.to_json())
     
     return jsonify(response)
 
