@@ -37,7 +37,7 @@ def get_mutual_friends():
     graph = UsersGraph(friends, mutual_ids)
 
     connections_counts = [len([connection for connection in graph.connections
-                               if user.id in connection.values()])
+                               if user.id in connection])
                           for user in friends]
     interval = max(connections_counts) - min(connections_counts)
 
