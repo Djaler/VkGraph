@@ -3,7 +3,7 @@
 for TOKEN in $TOKENS
 do
     export ACCESS_TOKEN=$TOKEN
-    celery worker -A app.celery -c 1 &
+    celery worker -A run_celery.celery -c 1 &
 done
 
-gunicorn -b "0.0.0.0:$PORT" app:app
+gunicorn -b "0.0.0.0:$PORT" run_app:app

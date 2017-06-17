@@ -5,9 +5,10 @@ import vk_api
 from celery import group
 from vk_api.vk_api import VkApiMethod
 
-from .. import app, cache, celery
-from ..model import User
-from ..utils import chunks
+from app import cache, celery
+from app.exceptions import NoUserException, UserDeactivatedException
+from app.model import User
+from app.utils import chunks
 
 token = os.environ.get("ACCESS_TOKEN")
 
@@ -17,7 +18,7 @@ _authorized_session = vk_api.VkApi(token=token)
 _authorized_session.auth()
 _authorized_api = _authorized_session.get_api()
 
-_cache_timeout = app.config.get("CACHE_TIMEOUT")
+_cache_timeout = 5 * 60
 _default_user_fields = ['id', 'first_name', 'last_name', 'photo_100', 'domain']
 
 VkApiMethod.__call__ = lambda self, **kwargs: self._vk.method(self._method, {
@@ -169,11 +170,3 @@ def _get_mutual_friends_ids_batch_task(user_ids: List[int],
         )
     
     return response.result
-
-
-class NoUserException(Exception):
-    pass
-
-
-class UserDeactivatedException(Exception):
-    pass

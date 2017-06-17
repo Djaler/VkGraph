@@ -20,22 +20,19 @@ class _Node:
         return self._parents
 
 
-class _Tree:
-    def __init__(self):
-        self._nodes = {}
-    
+class _Tree(dict):
     def add(self, node: _Node):
-        self._nodes[node.id] = node
+        self[node.id] = node
     
     def get_by_id(self, user_id: int) -> _Node:
-        return self._nodes[user_id]
+        return self[user_id]
     
     def is_id_exists(self, user_id: int):
-        return user_id in self._nodes
+        return user_id in self
     
     @property
     def nodes(self) -> List[_Node]:
-        return list(self._nodes.values())
+        return list(self.values())
 
 
 def _build_tree(root_id: int, max_depth: SupportsInt) -> _Tree:
@@ -114,10 +111,10 @@ def find_chain(user1: int, user2: int,
     
     if user2_friends_count < user1_friends_count:
         user1, user2 = user2, user1
-    
-    tree = _build_tree(user1, max_depth=ceil(depth))
-    
-    chain = _find_common_friend(user2, tree, max_depth=floor(depth))
+
+    tree = _build_tree(user1, max_depth=floor(depth))
+
+    chain = _find_common_friend(user2, tree, max_depth=ceil(depth))
     
     if not chain:
         return None

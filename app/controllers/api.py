@@ -1,11 +1,12 @@
-from flask import jsonify, request
+from flask import Blueprint, jsonify, request
 
-from .. import app
-from ..model import Chain, Response, Status, UsersGraph
-from ..services import friends_chain, mutual_friends, temperature_map, vk
+from app.model import Chain, Response, Status, UsersGraph
+from app.services import friends_chain, mutual_friends, temperature_map, vk
+
+api = Blueprint('api', __name__)
 
 
-@app.route("/api/user")
+@api.route("/api/user")
 def get_user():
     user_id = request.args.get("userId")
     
@@ -28,7 +29,7 @@ def get_user():
     return jsonify(response)
 
 
-@app.route("/api/mutual_friends")
+@api.route("/api/mutual_friends")
 def get_mutual_friends():
     user_id = int(request.args.get("userId"))
 
@@ -50,7 +51,7 @@ def get_mutual_friends():
     return jsonify(response)
 
 
-@app.route("/api/friends_chain")
+@api.route("/api/friends_chain")
 def get_friends_chain():
     user1_id = int(request.args.get("user1Id"))
     user2_id = int(request.args.get("user2Id"))

@@ -1,4 +1,4 @@
-from ..services import vk
+from . import vk
 
 
 def get_mutual_friends(user_id: int):

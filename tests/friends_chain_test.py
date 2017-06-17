@@ -5,9 +5,10 @@ from app.services import friends_chain
 
 
 class FriendsChainTestCase(unittest.TestCase):
-    def setUp(self):
-        self.user1 = 1
-        self.user2 = 2
+    @classmethod
+    def setUpClass(cls):
+        cls.user1 = 1
+        cls.user2 = 2
         friends_chain.vk = MagicMock()
     
     def test_empty_chain(self):

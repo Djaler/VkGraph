@@ -1,6 +1,6 @@
 from colorsys import hsv_to_rgb
 
-from ..utils import rgb_to_hex
+from app.utils import rgb_to_hex
 
 
 def calculate_color(value, interval):
