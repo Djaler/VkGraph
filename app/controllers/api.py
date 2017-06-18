@@ -40,12 +40,15 @@ def get_mutual_friends():
     connections_counts = [len([connection for connection in graph.connections
                                if user.id in connection])
                           for user in friends]
-    interval = max(connections_counts) - min(connections_counts)
 
+    interval_start, interval_end = min(connections_counts), max(
+        connections_counts)
+    interval_length = interval_end - interval_start
+    
     for user, connections_count in zip(graph.users, connections_counts):
-        user.color = temperature_map.calculate_color(connections_count,
-                                                     interval)
-
+        user.color = temperature_map.calculate_color(
+            connections_count - interval_start, interval_length)
+    
     response = Response(Status.OK, graph.to_json())
     
     return jsonify(response)
