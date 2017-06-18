@@ -77,7 +77,8 @@ function showCard() {
 
     inputCard
         .addClass("flipIn")
-        .removeClass("flipOut");
+        .removeClass("flipOut")
+        .off(animationEvent);
 
     enableScanButton();
     hideRefreshButton();
