@@ -3,3 +3,4 @@ Flask-Caching
 celery[redis]
 vk-api
 gunicorn
+pytest
