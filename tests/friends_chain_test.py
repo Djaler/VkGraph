@@ -10,8 +10,8 @@ def test_empty_chain():
     friends_chain.vk.get_friends_ids = MagicMock(return_value=[user2])
     
     chain = friends_chain.find_chain(user1, user2)
-    
-    assert [] == chain
+
+    assert chain == []
 
 
 def test_chain_through_one():
@@ -19,8 +19,8 @@ def test_chain_through_one():
     friends_chain.vk.get_mutual_friends_ids = MagicMock(return_value=[3])
     
     chain = friends_chain.find_chain(user1, user2)
-    
-    assert [3] == chain
+
+    assert chain == [3]
 
 
 def test_normal_chain():
@@ -33,8 +33,8 @@ def test_normal_chain():
                                    (4,): [user2, 3]}[args])
     
     chain = friends_chain.find_chain(user1, user2)
-    
-    assert [3, 4] == chain
+
+    assert chain == [3, 4]
 
 
 def test_no_chain():
@@ -47,8 +47,8 @@ def test_no_chain():
                                    (4,): [user2]}[args])
     
     chain = friends_chain.find_chain(user1, user2)
-    
-    assert None is chain
+
+    assert chain is None
 
 
 def test_reversed_chain():
@@ -61,5 +61,5 @@ def test_reversed_chain():
                                    (4,): [user2, 3]}[args])
     
     chain = friends_chain.find_chain(user1, user2)
-    
-    assert [3, 4] == chain
+
+    assert chain == [3, 4]
