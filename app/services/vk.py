@@ -8,7 +8,7 @@ from app.model import User
 from app.utils import chunks
 from . import tasks
 
-_cache_timeout = 5 * 60
+_cache_timeout = 30 * 60
 
 
 @cache.memoize(timeout=_cache_timeout)
