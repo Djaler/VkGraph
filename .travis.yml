@@ -4,7 +4,8 @@ language: python
 python:
   - "3.6"
 install:
-  - pip install -r requirements.txt
+  - pip install pipenv
+  - pipenv install --dev
 cache: pip
 script:
-  - python -m pytest tests
+  - pipenv run python -m pytest tests

@@ -1,6 +1,0 @@
-Flask==0.12.2
-Flask-Caching
-celery[redis]
-vk-api
-gunicorn
-pytest

@@ -12,7 +12,6 @@ token = os.environ.get("ACCESS_TOKEN")
 _incognito_api = vk_api.VkApi().get_api()
 
 _authorized_session = vk_api.VkApi(token=token)
-_authorized_session.auth()
 _authorized_api = _authorized_session.get_api()
 
 _default_user_fields = ['id', 'first_name', 'last_name', 'photo_100', 'domain']
