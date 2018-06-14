@@ -9,8 +9,6 @@ from app.utils import chunks
 
 token = os.environ.get("ACCESS_TOKEN")
 
-_incognito_api = vk_api.VkApi().get_api()
-
 _authorized_session = vk_api.VkApi(token=token)
 _authorized_api = _authorized_session.get_api()
 
@@ -45,7 +43,7 @@ def get_users(user_ids: Iterable[int]) -> List[dict]:
 
 @celery.task()
 def get_friends_count(user_id: int) -> int:
-    response = _incognito_api.friends.get(user_id=user_id)
+    response = _authorized_api.friends.get(user_id=user_id)
     
     return response['count']
 
