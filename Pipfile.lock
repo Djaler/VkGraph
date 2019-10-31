@@ -204,10 +204,10 @@
         },
         "vk-api": {
             "hashes": [
-                "sha256:650eda0107e806928bf57741870b41ab35431ba4dd154b01a3e5c75ebff9e666"
+                "sha256:d58e2489577904c87fac514282a7354878dc969f9545024a96d7f3b88e07f507"
             ],
             "index": "pypi",
-            "version": "==11.5.1"
+            "version": "==11.6.0"
         },
         "werkzeug": {
             "hashes": [
