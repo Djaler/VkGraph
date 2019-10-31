@@ -14,7 +14,7 @@ python_version = "3.6"
 
 Flask = "*"
 Flask-Caching = "*"
-celery = {extras = ["redis"]}
+celery = {version = "~=4.1",extras = ["redis"]}
 vk_api = "*"
 gunicorn = "*"
 
