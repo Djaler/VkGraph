@@ -85,12 +85,11 @@ def get_mutual_friends_ids(user1: int, user2: int) -> List[int]:
 @celery.task()
 def get_mutual_friends_ids_batch(user_ids: List[int],
                                  my_id: int) -> Dict[int, List[int]]:
-    with vk_api.VkRequestsPool(_authorized_session) as pool:
-        response = pool.method_one_param(
-            'friends.getMutual',
-            key='target_uid',
-            values=user_ids,
-            default_values={'source_uid': my_id}
-        )
-    
-    return response.result
+    result, error = vk_api.requests_pool.vk_request_one_param_pool(
+        _authorized_session,
+        'friends.getMutual',
+        key='target_uid',
+        values=user_ids,
+        default_values={'source_uid': my_id}
+    )
+    return result
